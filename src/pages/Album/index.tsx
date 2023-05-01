@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import { authAtom, userAtom } from "../Auth";
@@ -8,6 +8,11 @@ const AlbumPage = () => {
   const { id } = useParams();
   const [user] = useAtom(userAtom);
   const [auth] = useAtom(authAtom);
+  const audioCtx = useMemo(() => new AudioContext(), [id]);
+  const [audio, setAudio] = useState<AudioBuffer | null>(null);
+  const [playSound, setPlaySound] = useState<AudioBufferSourceNode | null>(
+    null
+  );
   const { data: image } = useQuery(`image-${id}`, async () => {
     const res = await fetch(`http://localhost:8096/items/${id}/images/Primary`);
 
@@ -38,16 +43,23 @@ const AlbumPage = () => {
         Authorization: auth,
       },
     });
-    console.log(id)
-    const ctx = new AudioContext()
-    const buf = await res.arrayBuffer()
-    const audio = await ctx.decodeAudioData(buf)
+    console.log(id);
+    const buf = await res.arrayBuffer();
+    setAudio(await audioCtx.decodeAudioData(buf));
 
-    const playSound = ctx.createBufferSource()
-    playSound.buffer = audio;
-    playSound.connect(ctx.destination)
-    playSound.start(ctx.currentTime)
+    playSound?.stop()
+
+    setPlaySound(audioCtx.createBufferSource());
   };
+
+  useEffect(() => {
+    if (!playSound) return;
+
+    playSound.buffer = audio;
+    playSound.connect(audioCtx.destination);
+    playSound.start(audioCtx.currentTime);
+
+  }, [playSound, audio]);
 
   return (
     <div className="flex bg-neutral-950 min-h-screen text-violet-50 p-8">
