@@ -12,7 +12,7 @@ const clientInfoAtom = atom(
 
 export const tokenAtom = persistantAtom("token", null);
 
-const authAtom = atom(
+export const authAtom = atom(
   (get) => `${get(clientInfoAtom)}, Token=${get(tokenAtom)}`
 );
 
@@ -20,9 +20,11 @@ const Auth: React.FC = () => {
   const [auth] = useAtom(authAtom);
   const [token, setToken] = useAtom(tokenAtom);
 
-  if (token) { return <Navigate to="/" /> }
+  // if (token) {
+  //   return <Navigate to="/" />;
+  // }
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,7 +43,7 @@ const Auth: React.FC = () => {
 
     const authData = await res.json();
     setToken(authData.AccessToken);
-    navigate("/")
+    navigate("/");
   };
 
   return (

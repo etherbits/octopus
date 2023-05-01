@@ -1,15 +1,31 @@
 import { useAtom } from "jotai";
-import { Link, Navigate } from "react-router-dom";
-import { tokenAtom } from "../Auth";
+import { authAtom } from "../Auth";
+import { useState } from 'react'
 
 const Home: React.FC = () => {
-  const [token] = useAtom(tokenAtom)
+  const [data, setData] = useState([])
+  const [auth] = useAtom(authAtom);
+  const getData = async () => {
+    const res = await fetch("http://localhost:8096/Artists", {
+      headers: {
+        Authorization: auth,
+      },
+    });
 
-  if (!token) return <Navigate to='/auth' />
+    const data = await res.json();
+    console.log(data.Items)
+    setData(data.Items)
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-neutral-950">
-      <Link className="text-indigo-500 text-3xl" to="/auth">go to auth</Link>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-neutral-950 p-8">
+      <button
+        onClick={() => getData()}
+        className="text-violet-50 bg-violet-500 rounded-md px-4 py-2"
+      >
+        Get Data
+      </button>
+      <pre className="max-w-4xl whitespace-normal text-violet-50 break-all">{data.map((item) => <div>{item.Name}</div>)}</pre>
     </div>
   );
 };
