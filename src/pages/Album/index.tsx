@@ -39,9 +39,13 @@ const AlbumPage = () => {
         <img src={image} className="w-96 h-96 rounded-lg" />
         <span>id: {id}</span>
       </div>
-      <div>
+      <div className="flex flex-col p-12 gap-4">
         {songs.map((song: any) => (
-          <div key={song.Id}>{song.Name}</div>
+          <div key={song.Id} className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md">
+            <img src={image} className="w-10 h-10" />
+            <div>{song.Name}</div>
+            <div className="ml-auto">{song.IndexNumber}</div>
+          </div>
         ))}
       </div>
     </div>
