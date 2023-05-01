@@ -1,10 +1,29 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "./schema";
 import { z } from "zod";
+import { atom, useAtom } from "jotai";
+import { persistantAtom } from "../../utils/jotai";
+
+const clientInfoAtom = atom(
+  'MediaBrowser Client="Octopus", Device="PC", DeviceId="Octopus", Version="0.0.0"'
+);
+
+export const tokenAtom = persistantAtom("token", null);
+
+const authAtom = atom(
+  (get) => `${get(clientInfoAtom)}, Token=${get(tokenAtom)}`
+);
 
 const Auth: React.FC = () => {
+  const [auth] = useAtom(authAtom);
+  const [token, setToken] = useAtom(tokenAtom);
+
+  if (token) { return <Navigate to="/" /> }
+
+  const navigate = useNavigate()
+
   const {
     register,
     formState: { errors },
@@ -13,8 +32,16 @@ const Auth: React.FC = () => {
     resolver: zodResolver(authSchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    const res = await fetch("http://localhost:8096/Users/AuthenticateByName", {
+      method: "POST",
+      headers: { Authorization: auth, "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const authData = await res.json();
+    setToken(authData.AccessToken);
+    navigate("/")
   };
 
   return (
@@ -46,11 +73,11 @@ const Auth: React.FC = () => {
           placeholder="••••••••"
           autoFocus
           className="bg-neutral-800 p-2 rounded-md text-violet-50 w-full"
-          {...register("password")}
+          {...register("Pw")}
         />
-        {errors.password && (
+        {errors.Pw && (
           <span className="text-red-400 w-full text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">
-            {errors.password.message}
+            {errors.Pw.message}
           </span>
         )}
         <button
