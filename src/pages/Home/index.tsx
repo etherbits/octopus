@@ -1,19 +1,21 @@
 import { useAtom } from "jotai";
-import { authAtom } from "../Auth";
+import { authAtom, userAtom } from "../Auth";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
 const Home: React.FC = () => {
   const [auth] = useAtom(authAtom);
+  const [user] = useAtom(userAtom);
+
   const { data } = useQuery("artists", async () => {
-    const res = await fetch("http://localhost:8096/Artists", {
+    const res = await fetch(`http://localhost:8096/Users/${user.id}/Items`, {
       headers: {
         Authorization: auth,
       },
     });
 
     const artists = await res.json();
-    console.log(artists)
+    console.log(artists);
     return artists.Items;
   });
 

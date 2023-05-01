@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "./schema";
 import { z } from "zod";
@@ -10,19 +10,15 @@ const clientInfoAtom = atom(
   'MediaBrowser Client="Octopus", Device="PC", DeviceId="Octopus", Version="0.0.0"'
 );
 
-export const tokenAtom = persistantAtom("token", null);
+export const userAtom = persistantAtom("token", null);
 
 export const authAtom = atom(
-  (get) => `${get(clientInfoAtom)}, Token=${get(tokenAtom)}`
+  (get) => `${get(clientInfoAtom)}, Token=${get(userAtom)?.token}`
 );
 
 const Auth: React.FC = () => {
   const [auth] = useAtom(authAtom);
-  const [token, setToken] = useAtom(tokenAtom);
-
-  // if (token) {
-  //   return <Navigate to="/" />;
-  // }
+  const [_, setUser] = useAtom(userAtom);
 
   const navigate = useNavigate();
 
@@ -42,7 +38,7 @@ const Auth: React.FC = () => {
     });
 
     const authData = await res.json();
-    setToken(authData.AccessToken);
+    setUser({ id: authData.User.Id, token: authData.AccessToken });
     navigate("/");
   };
 
