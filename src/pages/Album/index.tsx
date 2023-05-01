@@ -32,6 +32,22 @@ const AlbumPage = () => {
     return data.Items;
   });
 
+  const playAudio = async (id: string) => {
+    const res = await fetch(`http://localhost:8096/Audio/${id}/universal`, {
+      headers: {
+        Authorization: auth,
+      },
+    });
+    const ctx = new AudioContext()
+    const buf = await res.arrayBuffer()
+    const audio = await ctx.decodeAudioData(buf)
+
+    const playSound = ctx.createBufferSource()
+    playSound.buffer = audio;
+    playSound.connect(ctx.destination)
+    playSound.start(ctx.currentTime)
+  };
+
   return (
     <div className="flex bg-neutral-950 min-h-screen text-violet-50 p-8">
       <div>
@@ -39,15 +55,21 @@ const AlbumPage = () => {
         <img src={image} className="w-96 h-96 rounded-lg" />
         <span>id: {id}</span>
       </div>
-      <div className="flex flex-col p-12 gap-4">
-        {songs.map((song: any) => (
-          <div key={song.Id} className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md">
-            <img src={image} className="w-10 h-10" />
-            <div>{song.Name}</div>
-            <div className="ml-auto">{song.IndexNumber}</div>
-          </div>
-        ))}
-      </div>
+      {songs && (
+        <div className="flex flex-col p-12 gap-4">
+          {songs.map((song: any) => (
+            <button
+              key={song.Id}
+              onClick={() => playAudio(song.Id)}
+              className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
+            >
+              <img src={image} className="w-10 h-10" />
+              <div>{song.Name}</div>
+              <div className="ml-auto">{song.IndexNumber}</div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
