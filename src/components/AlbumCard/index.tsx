@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 interface Props {
   albumData: {
@@ -17,15 +18,15 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
     console.log(res);
     if (!res.ok) return;
     const img = await res.blob();
-    setImage(URL.createObjectURL(img))
+    setImage(URL.createObjectURL(img));
     // console.log(img);
   });
 
   return (
-    <div className="flex gap-2 m-8">
+    <Link to={`/album/${albumData.Id}`} className="flex gap-2 m-8 w-full">
       <img src={image} className="w-16 h-16" />
       {albumData.Name}
-    </div>
+    </Link>
   );
 };
 

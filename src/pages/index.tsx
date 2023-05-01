@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AuthRoute, ProtectedRoute } from "../utils/routes";
+import AlbumPage from "./Album";
 import Auth from "./Auth";
 import Home from "./Home";
 
@@ -20,4 +21,12 @@ export const router = createBrowserRouter([
       </AuthRoute>
     ),
   },
+  {
+    path: "/album/:id",
+    element: (
+      <ProtectedRoute>
+        <AlbumPage />
+      </ProtectedRoute>
+    )
+  }
 ]);
