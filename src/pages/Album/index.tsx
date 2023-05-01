@@ -33,11 +33,12 @@ const AlbumPage = () => {
   });
 
   const playAudio = async (id: string) => {
-    const res = await fetch(`http://localhost:8096/Audio/${id}/universal`, {
+    const res = await fetch(`http://localhost:8096/Audio/${id}/stream`, {
       headers: {
         Authorization: auth,
       },
     });
+    console.log(id)
     const ctx = new AudioContext()
     const buf = await res.arrayBuffer()
     const audio = await ctx.decodeAudioData(buf)
