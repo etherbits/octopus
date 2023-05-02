@@ -5,13 +5,16 @@ import useAudioStore from "../../stores/audio";
 import { authAtom, userAtom } from "../Auth";
 
 const AlbumPage = () => {
-  const { id } = useParams();
+  const { id: albumId } = useParams();
   const [user] = useAtom(userAtom);
   const [auth] = useAtom(authAtom);
-  const playTrack = useAudioStore((state) => state.playTrack)
-  const togglePlay = useAudioStore((state) => state.togglePlay)
-  const { data: image } = useQuery(`image-${id}`, async () => {
-    const res = await fetch(`http://localhost:8096/items/${id}/images/Primary`);
+  const playAlbum = useAudioStore((state) => state.playAlbum);
+  const togglePlay = useAudioStore((state) => state.togglePlay);
+
+  const { data: image } = useQuery(`image-${albumId}`, async () => {
+    const res = await fetch(
+      `http://localhost:8096/items/${albumId}/images/Primary`
+    );
 
     if (!res.ok) return;
 
@@ -19,9 +22,9 @@ const AlbumPage = () => {
     return URL.createObjectURL(img);
   });
 
-  const { data: songs } = useQuery(`songs-${id}`, async () => {
+  const { data: tracks } = useQuery(`album-tracks-${albumId}`, async () => {
     const res = await fetch(
-      `http://localhost:8096/Users/${user.id}/Items?ParentId=${id}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
+      `http://localhost:8096/Users/${user.id}/Items?ParentId=${albumId}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
       {
         headers: { Authorization: auth },
       }
@@ -34,15 +37,43 @@ const AlbumPage = () => {
     return data.Items;
   });
 
-  const playAudio = async (id: string) => {
-    const res = await fetch(`http://localhost:8096/Audio/${id}/stream`, {
-      headers: {
-        Authorization: auth,
-      },
-    });
-    const audioBlob = await res.blob();
+  const { data: audioUrls } = useQuery(
+    `album-audio-${albumId}`,
+    async () => {
+      const promises: Promise<string>[] = [];
 
-    playTrack(URL.createObjectURL(audioBlob))
+      tracks.forEach((track: any) => {
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            const res = await fetch(
+              `http://localhost:8096/Audio/${track.Id}/stream`,
+              {
+                headers: {
+                  Authorization: auth,
+                },
+              }
+            );
+
+            if (!res.ok) reject(new Error(res.statusText));
+
+            const audioBlob = await res.blob();
+
+            resolve(URL.createObjectURL(audioBlob));
+          })
+        );
+      });
+
+      const audioUrls = await Promise.all(promises);
+
+      return audioUrls
+    },
+    { enabled: !!tracks }
+  );
+
+  const playAudio = async (id: number) => {
+    if (!audioUrls) return
+
+    playAlbum(audioUrls, id)
   };
 
   return (
@@ -50,25 +81,27 @@ const AlbumPage = () => {
       <div>
         <Link to="/">Home</Link>
         <img src={image} className="w-96 h-96 rounded-lg" />
-        <span>id: {id}</span>
+        <span>id: {albumId}</span>
       </div>
-      {songs && (
+      {tracks && (
         <div className="flex flex-col p-12 gap-4">
-          {songs.map((song: any) => (
+          {tracks.map((track: any, i: number) => (
             <button
-              key={song.Id}
-              onClick={() => playAudio(song.Id)}
+              key={track.Id}
+              onClick={() => playAudio(i)}
               className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
             >
               <img src={image} className="w-10 h-10" />
-              <div>{song.Name}</div>
-              <div className="ml-auto">{song.IndexNumber}</div>
+              <div>{track.Name}</div>
+              <div className="ml-auto">{track.IndexNumber}</div>
             </button>
           ))}
         </div>
       )}
       <div className="flex bg-neutral-900 h-16 w-full">
-        <button className="bg-neutral-800" onClick={togglePlay}>play toggle</button>
+        <button className="bg-neutral-800" onClick={togglePlay}>
+          play toggle
+        </button>
       </div>
     </div>
   );

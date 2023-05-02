@@ -6,8 +6,13 @@ interface AudioState {
   audioContext: AudioContext;
   audio: HTMLAudioElement;
   addTrack: (track: string) => void;
+  setTracks: (tracks: string[]) => void;
+  setTrackIndex: (index: number) => void;
+  playNextTrack: () => void;
   playTrack: (track: string) => void;
+  playAlbum: (tracks: string[], startIndex?: number) => void;
   loadAudio: () => void;
+  playAudio: () => void;
   togglePlay: () => void;
 }
 
@@ -17,14 +22,35 @@ const useAudioStore = create<AudioState>((set, get) => ({
   audioContext: new AudioContext(),
   audio: new Audio(),
   addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
+  setTracks: (tracks: string[]) => set(() => ({ tracks })),
+  setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
+  playNextTrack: () => {
+    const { trackIndex, setTrackIndex, playAudio } = get();
+    setTrackIndex(trackIndex + 1);
+    playAudio();
+  },
   playTrack: (track) => {
     const { audio } = get();
     audio.src = track;
-    audio.play()
+    audio.play();
+  },
+  playAlbum: (tracks, startIndex = 0) => {
+    const { audio, setTrackIndex, setTracks, playAudio, playNextTrack } = get();
+    setTracks(tracks);
+    setTrackIndex(startIndex);
+
+    audio.onended = playNextTrack;
+
+    playAudio();
   },
   loadAudio: () => {
     const { audio, tracks, trackIndex } = get();
     audio.src = tracks[trackIndex];
+  },
+  playAudio: () => {
+    const { audio, loadAudio } = get();
+    loadAudio();
+    audio.play();
   },
   togglePlay: () => {
     const { audio } = get();
