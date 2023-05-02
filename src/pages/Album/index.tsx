@@ -83,7 +83,6 @@ const AlbumPage = () => {
       <div>
         <Link to="/">Home</Link>
         <img src={image} className="w-96 h-96 rounded-lg" />
-        <span>id: {albumId}</span>
       </div>
       {tracks && (
         <div className="flex flex-col p-12 gap-4">
