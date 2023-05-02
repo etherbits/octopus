@@ -10,6 +10,8 @@ const AlbumPage = () => {
   const [auth] = useAtom(authAtom);
   const playAlbum = useAudioStore((state) => state.playAlbum);
   const togglePlay = useAudioStore((state) => state.togglePlay);
+  const playPrev = useAudioStore((state) => state.playPrevTrack);
+  const playNext = useAudioStore((state) => state.playNextTrack);
 
   const { data: image } = useQuery(`image-${albumId}`, async () => {
     const res = await fetch(
@@ -98,9 +100,15 @@ const AlbumPage = () => {
           ))}
         </div>
       )}
-      <div className="flex bg-neutral-900 h-16 w-full">
+      <div className="flex gap-4 rounded-md bg-neutral-900 h-16 w-fit overflow-hidden">
+        <button className="bg-neutral-800" onClick={playPrev}>
+          prev track
+        </button>
         <button className="bg-neutral-800" onClick={togglePlay}>
           play toggle
+        </button>
+        <button className="bg-neutral-800" onClick={playNext}>
+          next track
         </button>
       </div>
     </div>

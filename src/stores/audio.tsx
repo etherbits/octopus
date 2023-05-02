@@ -9,6 +9,7 @@ interface AudioState {
   setTracks: (tracks: string[]) => void;
   setTrackIndex: (index: number) => void;
   playNextTrack: () => void;
+  playPrevTrack: () => void;
   playTrack: (track: string) => void;
   playAlbum: (tracks: string[], startIndex?: number) => void;
   loadAudio: () => void;
@@ -25,8 +26,13 @@ const useAudioStore = create<AudioState>((set, get) => ({
   setTracks: (tracks: string[]) => set(() => ({ tracks })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
   playNextTrack: () => {
+    const { tracks, trackIndex, setTrackIndex, playAudio } = get();
+    setTrackIndex(trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1);
+    playAudio();
+  },
+  playPrevTrack: () => {
     const { trackIndex, setTrackIndex, playAudio } = get();
-    setTrackIndex(trackIndex + 1);
+    setTrackIndex(trackIndex <= 0 ? 0 : trackIndex - 1);
     playAudio();
   },
   playTrack: (track) => {
