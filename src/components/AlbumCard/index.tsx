@@ -19,7 +19,6 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
     if (!res.ok) return;
     const img = await res.blob();
     setImage(URL.createObjectURL(img));
-    // console.log(img);
   });
 
   return (
@@ -31,3 +30,4 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
 };
 
 export default AlbumCard;
+

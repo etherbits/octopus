@@ -1,15 +1,15 @@
 import { useAtom } from "jotai";
-import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
-import { tracksAtom } from "../../components/MusicPlayer";
+import useAudioStore from "../../stores/audio";
 import { authAtom, userAtom } from "../Auth";
 
 const AlbumPage = () => {
   const { id } = useParams();
   const [user] = useAtom(userAtom);
   const [auth] = useAtom(authAtom);
-  const [_, setTrack] = useAtom(tracksAtom);
+  const playTrack = useAudioStore((state) => state.playTrack)
+  const togglePlay = useAudioStore((state) => state.togglePlay)
   const { data: image } = useQuery(`image-${id}`, async () => {
     const res = await fetch(`http://localhost:8096/items/${id}/images/Primary`);
 
@@ -40,9 +40,9 @@ const AlbumPage = () => {
         Authorization: auth,
       },
     });
-    console.log(id);
     const audioBlob = await res.blob();
-    setTrack([URL.createObjectURL(audioBlob), URL.createObjectURL(audioBlob)]);
+
+    playTrack(URL.createObjectURL(audioBlob))
   };
 
   return (
@@ -67,6 +67,9 @@ const AlbumPage = () => {
           ))}
         </div>
       )}
+      <div className="flex bg-neutral-900 h-16 w-full">
+        <button className="bg-neutral-800" onClick={togglePlay}>play toggle</button>
+      </div>
     </div>
   );
 };
