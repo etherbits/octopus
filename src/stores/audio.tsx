@@ -12,8 +12,8 @@ interface AudioState {
   tracks: Track[];
   trackMetaDatas: TrackMetaData[];
   trackIndex: number;
-  audioContext: AudioContext;
   audio: HTMLAudioElement;
+  setVolume: (volume: number) => void;
   addTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
   setTrackMetaDatas: (trackMetaDatas: TrackMetaData[]) => void;
@@ -35,8 +35,12 @@ const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
   trackMetaDatas: [],
   trackIndex: 0,
-  audioContext: new AudioContext(),
   audio: new Audio(),
+  setVolume: (volume: number) => {
+    const { audio } = get();
+    audio.volume = volume;
+    console.log(audio, audio.volume)
+  },
   addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
   setTrackMetaDatas: (trackMetaDatas) => set(() => ({ trackMetaDatas })),

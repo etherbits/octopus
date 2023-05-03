@@ -1,4 +1,5 @@
 import useAudioStore from "../../../stores/audio";
+import VolumeControl from "../../VolumeControl";
 
 interface Props {
   children: React.ReactNode;
@@ -27,6 +28,9 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
           next track
         </button>
         {track && <span>{track.Name}</span>}
+        <div className="ml-auto">
+          <VolumeControl />
+        </div>
       </div>
     </div>
   );
