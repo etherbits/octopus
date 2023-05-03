@@ -21,20 +21,22 @@ const AlbumPage = () => {
     return URL.createObjectURL(img);
   });
 
-  const { data: trackMetaDatas } = useQuery(`album-tracks-${albumId}`, async () => {
-    const res = await fetch(
-      `http://localhost:8096/Users/${user.id}/Items?ParentId=${albumId}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
-      {
-        headers: { Authorization: auth },
-      }
-    );
+  const { data: trackMetaDatas } = useQuery(
+    `album-tracks-${albumId}`,
+    async () => {
+      const res = await fetch(
+        `http://localhost:8096/Users/${user.id}/Items?ParentId=${albumId}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
+        {
+          headers: { Authorization: auth },
+        }
+      );
 
-    if (!res.ok) return;
+      if (!res.ok) return;
 
-    const data = await res.json();
-    console.log(data.Items);
-    return data.Items;
-  });
+      const data = await res.json();
+      return data.Items;
+    }
+  );
 
   const { data: tracks } = useQuery(
     `album-audio-${albumId}`,
@@ -71,10 +73,10 @@ const AlbumPage = () => {
     { enabled: !!trackMetaDatas }
   );
 
-  const playAudio = async (id: number) => {
+  const playAudio = async (index: number) => {
     if (!tracks) return;
 
-    playAlbum(tracks, id);
+    playAlbum(trackMetaDatas, tracks, index);
   };
 
   return (
@@ -87,7 +89,7 @@ const AlbumPage = () => {
         <div className="flex flex-col p-12 gap-4">
           {trackMetaDatas.map((trackMetaData: any, i: number) => (
             <button
-              key={trackMetaData}
+              key={trackMetaData.Id}
               onClick={() => playAudio(i)}
               className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
             >

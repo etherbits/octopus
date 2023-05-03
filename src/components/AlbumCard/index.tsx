@@ -15,7 +15,6 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
     const res = await fetch(
       `http://localhost:8096/items/${albumData.Id}/images/Primary`
     );
-    console.log(res);
     if (!res.ok) return;
     const img = await res.blob();
     setImage(URL.createObjectURL(img));

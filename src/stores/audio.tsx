@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type TrackMetaData = {
-  title: string;
+  Name: string;
 };
 
 export type Track = {
@@ -29,7 +29,6 @@ interface AudioState {
   loadAudio: () => void;
   playAudio: () => void;
   togglePlay: () => void;
-  getCurrentTrack: () => TrackMetaData;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
@@ -91,10 +90,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
     }
 
     audio.pause();
-  },
-  getCurrentTrack: () => {
-    const { trackMetaDatas, trackIndex } = get();
-    return trackMetaDatas[trackIndex];
   },
 }));
 

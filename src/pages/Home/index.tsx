@@ -19,7 +19,6 @@ const Home: React.FC = () => {
     );
 
     const artists = await res.json();
-    console.log(artists);
     return artists.Items;
   });
 
