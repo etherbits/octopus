@@ -24,18 +24,16 @@ const Home: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-neutral-950 p-8">
-      <button className="text-violet-50 bg-violet-500 rounded-md px-4 py-2">
-        Get Data
-      </button>
+    <div className="flex flex-col h-full bg-neutral-950 text-neutral-50 overflow-auto p-8">
+      <h1 className="text-4xl">Albums</h1>
       {data && (
-        <pre className="max-w-4xl whitespace-normal text-violet-50 break-all">
-          {data.map((item: { Id: string, Name: string }) => (
+        <ul>
+          {data.map((item: { Id: string; Name: string }) => (
             <div key={item.Id}>
               <AlbumCard albumData={item} />
             </div>
           ))}
-        </pre>
+        </ul>
       )}
     </div>
   );
