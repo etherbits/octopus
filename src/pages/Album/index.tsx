@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
-import useAudioStore from "../../stores/audio";
+import useAudioStore, { Track } from "../../stores/audio";
 import { authAtom, userAtom } from "../Auth";
 
 const AlbumPage = () => {
@@ -39,10 +39,10 @@ const AlbumPage = () => {
     return data.Items;
   });
 
-  const { data: audioUrls } = useQuery(
+  const { data: tracksWithAudio } = useQuery(
     `album-audio-${albumId}`,
     async () => {
-      const promises: Promise<string>[] = [];
+      const promises: Promise<Track>[] = [];
 
       tracks.forEach((track: any) => {
         promises.push(
@@ -60,22 +60,25 @@ const AlbumPage = () => {
 
             const audioBlob = await res.blob();
 
-            resolve(URL.createObjectURL(audioBlob));
+            resolve({
+              title: track.Name,
+              audioUrl: URL.createObjectURL(audioBlob),
+            });
           })
         );
       });
 
       const audioUrls = await Promise.all(promises);
 
-      return audioUrls
+      return audioUrls;
     },
     { enabled: !!tracks }
   );
 
   const playAudio = async (id: number) => {
-    if (!audioUrls) return
+    if (!tracksWithAudio) return;
 
-    playAlbum(audioUrls, id)
+    playAlbum(tracksWithAudio, id);
   };
 
   return (
@@ -99,17 +102,6 @@ const AlbumPage = () => {
           ))}
         </div>
       )}
-      <div className="flex gap-4 rounded-md bg-neutral-900 h-16 w-fit overflow-hidden">
-        <button className="bg-neutral-800" onClick={playPrev}>
-          prev track
-        </button>
-        <button className="bg-neutral-800" onClick={togglePlay}>
-          play toggle
-        </button>
-        <button className="bg-neutral-800" onClick={playNext}>
-          next track
-        </button>
-      </div>
     </div>
   );
 };
