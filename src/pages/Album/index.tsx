@@ -9,9 +9,6 @@ const AlbumPage = () => {
   const [user] = useAtom(userAtom);
   const [auth] = useAtom(authAtom);
   const playAlbum = useAudioStore((state) => state.playAlbum);
-  const togglePlay = useAudioStore((state) => state.togglePlay);
-  const playPrev = useAudioStore((state) => state.playPrevTrack);
-  const playNext = useAudioStore((state) => state.playNextTrack);
 
   const { data: image } = useQuery(`image-${albumId}`, async () => {
     const res = await fetch(
@@ -24,7 +21,7 @@ const AlbumPage = () => {
     return URL.createObjectURL(img);
   });
 
-  const { data: tracks } = useQuery(`album-tracks-${albumId}`, async () => {
+  const { data: trackMetaDatas } = useQuery(`album-tracks-${albumId}`, async () => {
     const res = await fetch(
       `http://localhost:8096/Users/${user.id}/Items?ParentId=${albumId}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
       {
@@ -39,12 +36,12 @@ const AlbumPage = () => {
     return data.Items;
   });
 
-  const { data: tracksWithAudio } = useQuery(
+  const { data: tracks } = useQuery(
     `album-audio-${albumId}`,
     async () => {
       const promises: Promise<Track>[] = [];
 
-      tracks.forEach((track: any) => {
+      trackMetaDatas.forEach((track: any) => {
         promises.push(
           new Promise(async (resolve, reject) => {
             const res = await fetch(
@@ -61,7 +58,6 @@ const AlbumPage = () => {
             const audioBlob = await res.blob();
 
             resolve({
-              title: track.Name,
               audioUrl: URL.createObjectURL(audioBlob),
             });
           })
@@ -72,13 +68,13 @@ const AlbumPage = () => {
 
       return audioUrls;
     },
-    { enabled: !!tracks }
+    { enabled: !!trackMetaDatas }
   );
 
   const playAudio = async (id: number) => {
-    if (!tracksWithAudio) return;
+    if (!tracks) return;
 
-    playAlbum(tracksWithAudio, id);
+    playAlbum(tracks, id);
   };
 
   return (
@@ -87,17 +83,17 @@ const AlbumPage = () => {
         <Link to="/">Home</Link>
         <img src={image} className="w-96 h-96 rounded-lg" />
       </div>
-      {tracks && (
+      {trackMetaDatas && (
         <div className="flex flex-col p-12 gap-4">
-          {tracks.map((track: any, i: number) => (
+          {trackMetaDatas.map((trackMetaData: any, i: number) => (
             <button
-              key={track.Id}
+              key={trackMetaData}
               onClick={() => playAudio(i)}
               className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
             >
               <img src={image} className="w-10 h-10" />
-              <div>{track.Name}</div>
-              <div className="ml-auto">{track.IndexNumber}</div>
+              <div>{trackMetaData.Name}</div>
+              <div className="ml-auto">{trackMetaData.IndexNumber}</div>
             </button>
           ))}
         </div>

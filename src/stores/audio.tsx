@@ -1,34 +1,46 @@
 import { create } from "zustand";
 
-type Track = {
-  title: string
-  audioUrl: string
-}
+export type TrackMetaData = {
+  title: string;
+};
+
+export type Track = {
+  audioUrl: string;
+};
 
 interface AudioState {
   tracks: Track[];
+  trackMetaDatas: TrackMetaData[];
   trackIndex: number;
   audioContext: AudioContext;
   audio: HTMLAudioElement;
   addTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
+  setTrackMetaDatas: (trackMetaDatas: TrackMetaData[]) => void;
   setTrackIndex: (index: number) => void;
   playNextTrack: () => void;
   playPrevTrack: () => void;
   playTrack: (track: Track) => void;
-  playAlbum: (tracks: Track[], startIndex?: number) => void;
+  playAlbum: (
+    trackMetaDatas: TrackMetaData[],
+    tracks: Track[],
+    startIndex?: number
+  ) => void;
   loadAudio: () => void;
   playAudio: () => void;
   togglePlay: () => void;
+  getCurrentTrack: () => TrackMetaData;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
+  trackMetaDatas: [],
   trackIndex: 0,
   audioContext: new AudioContext(),
   audio: new Audio(),
   addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
+  setTrackMetaDatas: (trackMetaDatas) => set(() => ({ trackMetaDatas })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
   playNextTrack: () => {
     const { tracks, trackIndex, setTrackIndex, playAudio } = get();
@@ -45,8 +57,16 @@ const useAudioStore = create<AudioState>((set, get) => ({
     audio.src = track.audioUrl;
     audio.play();
   },
-  playAlbum: (tracks, startIndex = 0) => {
-    const { audio, setTrackIndex, setTracks, playAudio, playNextTrack } = get();
+  playAlbum: (trackMetaDatas, tracks, startIndex = 0) => {
+    const {
+      audio,
+      setTrackIndex,
+      setTracks,
+      setTrackMetaDatas,
+      playAudio,
+      playNextTrack,
+    } = get();
+    setTrackMetaDatas(trackMetaDatas);
     setTracks(tracks);
     setTrackIndex(startIndex);
 
@@ -71,6 +91,10 @@ const useAudioStore = create<AudioState>((set, get) => ({
     }
 
     audio.pause();
+  },
+  getCurrentTrack: () => {
+    const { trackMetaDatas, trackIndex } = get();
+    return trackMetaDatas[trackIndex];
   },
 }));
 
