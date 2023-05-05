@@ -2,26 +2,35 @@ import { create } from "zustand";
 
 export type TrackMetaData = {
   Name: string;
+  Album: string;
+  Artists: string[];
 };
 
 export type Track = {
   audioUrl: string;
 };
 
+export type AlbumMetaData = {
+  imageUrl: string;
+};
+
 interface AudioState {
   tracks: Track[];
+  albumMetaData: AlbumMetaData | null;
   trackMetaDatas: TrackMetaData[];
   trackIndex: number;
   audio: HTMLAudioElement;
   setVolume: (volume: number) => void;
   addTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
+  setAlbumMetaData: (albumMetaData: AlbumMetaData) => void;
   setTrackMetaDatas: (trackMetaDatas: TrackMetaData[]) => void;
   setTrackIndex: (index: number) => void;
   playNextTrack: () => void;
   playPrevTrack: () => void;
   playTrack: (track: Track) => void;
   playAlbum: (
+    albumMetaData: AlbumMetaData,
     trackMetaDatas: TrackMetaData[],
     tracks: Track[],
     startIndex?: number
@@ -33,16 +42,18 @@ interface AudioState {
 
 const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
+  albumMetaData: null,
   trackMetaDatas: [],
   trackIndex: 0,
   audio: new Audio(),
   setVolume: (volume: number) => {
     const { audio } = get();
     audio.volume = volume;
-    console.log(audio, audio.volume)
+    console.log(audio, audio.volume);
   },
   addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
+  setAlbumMetaData: (albumMetaData) => set(() => ({ albumMetaData })),
   setTrackMetaDatas: (trackMetaDatas) => set(() => ({ trackMetaDatas })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
   playNextTrack: () => {
@@ -60,15 +71,17 @@ const useAudioStore = create<AudioState>((set, get) => ({
     audio.src = track.audioUrl;
     audio.play();
   },
-  playAlbum: (trackMetaDatas, tracks, startIndex = 0) => {
+  playAlbum: (albumMetaData, trackMetaDatas, tracks, startIndex = 0) => {
     const {
       audio,
       setTrackIndex,
       setTracks,
+      setAlbumMetaData,
       setTrackMetaDatas,
       playAudio,
       playNextTrack,
     } = get();
+    setAlbumMetaData(albumMetaData);
     setTrackMetaDatas(trackMetaDatas);
     setTracks(tracks);
     setTrackIndex(startIndex);

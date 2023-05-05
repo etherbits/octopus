@@ -74,13 +74,13 @@ const AlbumPage = () => {
   );
 
   const playAudio = async (index: number) => {
-    if (!tracks) return;
+    if (!tracks || !image) return;
 
-    playAlbum(trackMetaDatas, tracks, index);
+    playAlbum({ imageUrl: image }, trackMetaDatas, tracks, index);
   };
 
   return (
-    <div className="flex bg-neutral-950 min-h-screen text-violet-50 p-8">
+    <div className="flex bg-neutral-900 min-h-screen text-violet-50 p-8">
       <div>
         <Link to="/">Home</Link>
         <img src={image} className="w-96 h-96 rounded-lg" />
