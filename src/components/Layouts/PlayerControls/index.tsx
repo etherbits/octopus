@@ -1,4 +1,5 @@
-import useAudioStore from "../../../stores/audio";
+import { SyntheticEvent, useEffect, useState } from "react";
+import useAudioStore, { AudioData } from "../../../stores/audio";
 import VolumeControl from "../../VolumeControl";
 
 interface Props {
@@ -12,6 +13,7 @@ const sToMSS = (seconds: number) => {
 };
 
 const PlayerControls: React.FC<Props> = ({ children }) => {
+  const [audioData, setAudioData] = useState<AudioData | null>(null);
   const togglePlay = useAudioStore((state) => state.togglePlay);
   const playPrev = useAudioStore((state) => state.playPrevTrack);
   const playNext = useAudioStore((state) => state.playNextTrack);
@@ -21,7 +23,30 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
   });
   const album = useAudioStore((state) => state.albumMetaData);
   const audio = useAudioStore((state) => state.audio);
-  console.log(track);
+
+  const handlePlay = (e: Event) => {
+    const { currentTime, duration } = e.target as HTMLAudioElement;
+
+    setAudioData({ currentTime, duration });
+  };
+
+  const handleTick = (audio: HTMLAudioElement) => {
+    const { currentTime, duration } = audio;
+    setAudioData({ currentTime, duration });
+  };
+
+  useEffect(() => {
+    audio.addEventListener("loadedmetadata", handlePlay);
+    const audioInterval = setInterval(() => {
+      handleTick(audio);
+    }, 16);
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", handlePlay);
+      clearInterval(audioInterval);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen">
       <div className="h-full overflow-auto">{children}</div>
@@ -51,10 +76,22 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
         <div className="flex flex-col gap-3 flex-grow">
           <div className="flex">
             {track && <span>{track.Name}</span>}
-            {audio && <span className="ml-auto text-neutral-400 font-light text-sm">{sToMSS(audio.currentTime)} / {sToMSS(audio.duration)}</span>}
+            {audioData && (
+              <span className="ml-auto text-neutral-400 font-light text-sm">
+                {sToMSS(audioData.currentTime)} / {sToMSS(audioData.duration)}
+              </span>
+            )}
           </div>
           <div className="w-full h-2 bg-neutral-800 rounded-md overflow-hidden">
-            <div className="h-full w-[60%] bg-orange-600 rounded-md" />
+            {audioData && audio.currentTime > 0 && (
+              <div
+                className={`h-full bg-orange-600 rounded-md`}
+                style={{
+                  width:
+                    (audioData.currentTime / audioData.duration) * 100 + "%",
+                }}
+              />
+            )}
           </div>
         </div>
         <div className="flex gap-3 items-center">

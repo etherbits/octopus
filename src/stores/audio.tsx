@@ -14,6 +14,11 @@ export type AlbumMetaData = {
   imageUrl: string;
 };
 
+export type AudioData = {
+  currentTime: number;
+  duration: number;
+};
+
 interface AudioState {
   tracks: Track[];
   albumMetaData: AlbumMetaData | null;
@@ -38,6 +43,7 @@ interface AudioState {
   loadAudio: () => void;
   playAudio: () => void;
   togglePlay: () => void;
+  getAudioData: () => AudioData;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
@@ -107,6 +113,15 @@ const useAudioStore = create<AudioState>((set, get) => ({
     }
 
     audio.pause();
+  },
+  getAudioData: () => {
+    const { audio } = get();
+    const audioData = {
+      currentTime: audio.currentTime,
+      duration: audio.duration,
+    };
+
+    return audioData;
   },
 }));
 
