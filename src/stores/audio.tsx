@@ -15,6 +15,7 @@ export type AlbumMetaData = {
 };
 
 export type AudioData = {
+  isPlaying: boolean;
   currentTime: number;
   duration: number;
 };
@@ -117,6 +118,7 @@ const useAudioStore = create<AudioState>((set, get) => ({
   getAudioData: () => {
     const { audio } = get();
     const audioData = {
+      isPlaying: !audio.paused,
       currentTime: audio.currentTime,
       duration: audio.duration,
     };

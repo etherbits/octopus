@@ -1,5 +1,6 @@
 import { SyntheticEvent, useEffect, useState } from "react";
 import useAudioStore, { AudioData } from "../../../stores/audio";
+import ProgressBar from "../../ProgressBar";
 import VolumeControl from "../../VolumeControl";
 
 interface Props {
@@ -23,41 +24,47 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
   });
   const album = useAudioStore((state) => state.albumMetaData);
   const audio = useAudioStore((state) => state.audio);
+  const getAudioData = useAudioStore((state) => state.getAudioData);
 
-  const handlePlay = (e: Event) => {
-    const { currentTime, duration } = e.target as HTMLAudioElement;
-
-    setAudioData({ currentTime, duration });
-  };
-
-  const handleTick = (audio: HTMLAudioElement) => {
-    const { currentTime, duration } = audio;
-    setAudioData({ currentTime, duration });
+  const updateData = () => {
+    const newData = getAudioData();
+    if (!newData.isPlaying) return;
+    setAudioData(newData);
   };
 
   useEffect(() => {
-    audio.addEventListener("loadedmetadata", handlePlay);
+    audio.addEventListener("loadedmetadata", updateData);
+    audio.addEventListener("play", updateData);
     const audioInterval = setInterval(() => {
-      handleTick(audio);
-    }, 16);
+      updateData();
+    }, 1000);
 
     return () => {
-      audio.removeEventListener("loadedmetadata", handlePlay);
+      audio.removeEventListener("loadedmetadata", updateData);
       clearInterval(audioInterval);
     };
-  }, []);
+  }, [audio]);
 
   return (
     <div className="flex flex-col h-screen">
       <div className="h-full overflow-auto">{children}</div>
       <div className="flex gap-10 bg-neutral-950 text-violet-50 items-center p-4">
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3"
+          style={{ opacity: track ? 1 : 0 }}
+        >
           <img src={album?.imageUrl} className="w-16 h-16 rounded-md" />
-          <div className="flex flex-col gap-2">
-            <div className="text-neutral-100 whitespace-nowrap">
+          <div className="flex flex-col gap-2 w-40 overflow-hidden">
+            <div
+              className="text-neutral-100 whitespace-nowrap"
+              title={track?.Artists[0]}
+            >
               {track?.Artists[0]}
             </div>
-            <div className="text-neutral-400 text-sm font-light whitespace-nowrap">
+            <div
+              className="text-neutral-400 text-sm font-light whitespace-nowrap w-full truncate overflow-hidden"
+              title={track?.Album}
+            >
               {track?.Album}
             </div>
           </div>
@@ -82,17 +89,14 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
               </span>
             )}
           </div>
-          <div className="w-full h-2 bg-neutral-800 rounded-md overflow-hidden">
-            {audioData && (
-              <div
-                className={`h-full bg-orange-600 rounded-md`}
-                style={{
-                  width:
-                    (audioData.currentTime / audioData.duration) * 100 + "%",
-                }}
-              />
-            )}
-          </div>
+
+          <ProgressBar
+            value={audioData?.currentTime}
+            maxValue={audioData?.duration}
+            onChange={(percentage) => {
+              audio.currentTime = audio.duration * percentage;
+            }}
+          />
         </div>
         <div className="flex gap-3 items-center">
           <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]" />
