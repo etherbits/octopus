@@ -83,7 +83,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
             )}
           </div>
           <div className="w-full h-2 bg-neutral-800 rounded-md overflow-hidden">
-            {audioData && audio.currentTime > 0 && (
+            {audioData && (
               <div
                 className={`h-full bg-orange-600 rounded-md`}
                 style={{
