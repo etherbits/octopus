@@ -49,6 +49,7 @@ interface AudioState {
   addAudioListeners: () => void;
   removeAudioListeners: () => void;
   updateAudioData: () => void;
+  seekAudio: (percentage: number) => void;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
@@ -126,7 +127,7 @@ const useAudioStore = create<AudioState>((set, get) => ({
   },
   addAudioListeners: () => {
     const { audio, updateAudioData } = get();
-      console.log('listen')
+    console.log("listen");
     audio.addEventListener("timeupdate", updateAudioData);
   },
   removeAudioListeners: () => {
@@ -145,6 +146,11 @@ const useAudioStore = create<AudioState>((set, get) => ({
         },
       };
     }),
+
+  seekAudio: (percentage) => {
+    const { audio } = get();
+    audio.currentTime = audio.duration * percentage;
+  },
 }));
 
 export default useAudioStore;

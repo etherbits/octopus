@@ -22,7 +22,8 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
     return trackMetaDatas[trackIndex];
   });
   const album = useAudioStore((state) => state.albumMetaData);
-  const audioData = useAudioStore(( state ) => state.audioData);
+  const audioData = useAudioStore((state) => state.audioData);
+  const seekAudio = useAudioStore((state) => state.seekAudio);
 
   return (
     <div className="flex flex-col h-screen">
@@ -72,9 +73,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
           <ProgressBar
             value={audioData?.currentTime}
             maxValue={audioData?.duration}
-            onChange={(percentage) => {
-              // audio.currentTime = audio.duration * percentage;
-            }}
+            onChange={seekAudio}
           />
         </div>
         <div className="flex gap-3 items-center">
