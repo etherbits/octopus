@@ -10,6 +10,9 @@ dependencies:
   framer-motion:
     specifier: ^10.12.8
     version: 10.12.8(react-dom@18.2.0)(react@18.2.0)
+  howler:
+    specifier: ^2.2.3
+    version: 2.2.3
   jotai:
     specifier: ^2.0.4
     version: 2.0.4(react@18.2.0)
@@ -1060,6 +1063,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /howler@2.2.3:
+    resolution: {integrity: sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==}
+    dev: false
 
   /inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}

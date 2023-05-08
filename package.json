@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.1.0",
     "@tauri-apps/api": "^1.2.0",
     "framer-motion": "^10.12.8",
+    "howler": "^2.2.3",
     "jotai": "^2.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

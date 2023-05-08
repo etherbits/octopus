@@ -118,17 +118,15 @@ const useAudioStore = create<AudioState>((set, get) => ({
     const { audio, removeAudioListeners, addAudioListeners } = get();
 
     if (audio.paused) {
-      addAudioListeners();
       return audio.play();
     }
 
-    removeAudioListeners();
     audio.pause();
   },
   addAudioListeners: () => {
     const { audio, updateAudioData } = get();
-    console.log("listen");
     audio.addEventListener("timeupdate", updateAudioData);
+    audio.addEventListener("play", updateAudioData);
   },
   removeAudioListeners: () => {
     const { audio, updateAudioData } = get();
@@ -137,7 +135,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
   updateAudioData: () =>
     set(() => {
       const { audio } = get();
-      console.log(audio.currentTime, audio.duration, audio);
       return {
         audioData: {
           currentTime: audio.currentTime,
@@ -148,8 +145,10 @@ const useAudioStore = create<AudioState>((set, get) => ({
     }),
 
   seekAudio: (percentage) => {
-    const { audio } = get();
+    const { audio, updateAudioData } = get();
+
     audio.currentTime = audio.duration * percentage;
+    updateAudioData();
   },
 }));
 

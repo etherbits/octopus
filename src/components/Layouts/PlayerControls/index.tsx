@@ -24,7 +24,6 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
   const album = useAudioStore((state) => state.albumMetaData);
   const audioData = useAudioStore((state) => state.audioData);
   const seekAudio = useAudioStore((state) => state.seekAudio);
-
   return (
     <div className="flex flex-col h-screen">
       <div className="h-full overflow-auto">{children}</div>
