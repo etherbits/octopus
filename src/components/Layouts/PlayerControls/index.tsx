@@ -73,7 +73,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
             value={audioData?.currentTime}
             maxValue={audioData?.duration}
             onChange={(percentage) => {
-              audio.currentTime = audio.duration * percentage;
+              // audio.currentTime = audio.duration * percentage;
             }}
           />
         </div>

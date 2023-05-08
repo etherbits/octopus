@@ -93,7 +93,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
       setTrackMetaDatas,
       playAudio,
       playNextTrack,
-      updateAudioData
     } = get();
     setAlbumMetaData(albumMetaData);
     setTrackMetaDatas(trackMetaDatas);
@@ -101,7 +100,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
     setTrackIndex(startIndex);
 
     audio.onended = playNextTrack;
-    audio.ontimeupdate = updateAudioData
 
     playAudio();
   },
@@ -112,21 +110,29 @@ const useAudioStore = create<AudioState>((set, get) => ({
   playAudio: () => {
     const { audio, loadAudio, addAudioListeners } = get();
     loadAudio();
-    // addAudioListeners();
+    addAudioListeners();
     audio.play();
   },
   togglePlay: () => {
     const { audio, removeAudioListeners, addAudioListeners } = get();
 
     if (audio.paused) {
-      addAudioListeners()
+      addAudioListeners();
       return audio.play();
     }
-    removeAudioListeners()
+
+    removeAudioListeners();
     audio.pause();
   },
-  addAudioListeners: () =>{},
-  removeAudioListeners: () =>{},
+  addAudioListeners: () => {
+    const { audio, updateAudioData } = get();
+      console.log('listen')
+    audio.addEventListener("timeupdate", updateAudioData);
+  },
+  removeAudioListeners: () => {
+    const { audio, updateAudioData } = get();
+    audio.removeEventListener("timeupdate", updateAudioData);
+  },
   updateAudioData: () =>
     set(() => {
       const { audio } = get();
