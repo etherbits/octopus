@@ -14,7 +14,6 @@ const sToMSS = (seconds: number) => {
 };
 
 const PlayerControls: React.FC<Props> = ({ children }) => {
-  const [audioData, setAudioData] = useState<AudioData | null>(null);
   const togglePlay = useAudioStore((state) => state.togglePlay);
   const playPrev = useAudioStore((state) => state.playPrevTrack);
   const playNext = useAudioStore((state) => state.playNextTrack);
@@ -23,27 +22,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
     return trackMetaDatas[trackIndex];
   });
   const album = useAudioStore((state) => state.albumMetaData);
-  const audio = useAudioStore((state) => state.audio);
-  const getAudioData = useAudioStore((state) => state.getAudioData);
-
-  const updateData = () => {
-    const newData = getAudioData();
-    if (!newData.isPlaying) return;
-    setAudioData(newData);
-  };
-
-  useEffect(() => {
-    audio.addEventListener("loadedmetadata", updateData);
-    audio.addEventListener("play", updateData);
-    const audioInterval = setInterval(() => {
-      updateData();
-    }, 1000);
-
-    return () => {
-      audio.removeEventListener("loadedmetadata", updateData);
-      clearInterval(audioInterval);
-    };
-  }, [audio]);
+  const audioData = useAudioStore(( state ) => state.audioData);
 
   return (
     <div className="flex flex-col h-screen">

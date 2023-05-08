@@ -25,6 +25,8 @@ interface AudioState {
   albumMetaData: AlbumMetaData | null;
   trackMetaDatas: TrackMetaData[];
   trackIndex: number;
+  audioData: AudioData | null;
+  audioInterval: NodeJS.Timer | null;
   audio: HTMLAudioElement;
   setVolume: (volume: number) => void;
   addTrack: (track: Track) => void;
@@ -44,7 +46,9 @@ interface AudioState {
   loadAudio: () => void;
   playAudio: () => void;
   togglePlay: () => void;
-  getAudioData: () => AudioData;
+  addAudioListeners: () => void;
+  removeAudioListeners: () => void;
+  updateAudioData: () => void;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
@@ -52,6 +56,8 @@ const useAudioStore = create<AudioState>((set, get) => ({
   albumMetaData: null,
   trackMetaDatas: [],
   trackIndex: 0,
+  audioData: null,
+  audioInterval: null,
   audio: new Audio(),
   setVolume: (volume: number) => {
     const { audio } = get();
@@ -87,6 +93,7 @@ const useAudioStore = create<AudioState>((set, get) => ({
       setTrackMetaDatas,
       playAudio,
       playNextTrack,
+      updateAudioData
     } = get();
     setAlbumMetaData(albumMetaData);
     setTrackMetaDatas(trackMetaDatas);
@@ -94,6 +101,7 @@ const useAudioStore = create<AudioState>((set, get) => ({
     setTrackIndex(startIndex);
 
     audio.onended = playNextTrack;
+    audio.ontimeupdate = updateAudioData
 
     playAudio();
   },
@@ -102,29 +110,35 @@ const useAudioStore = create<AudioState>((set, get) => ({
     audio.src = tracks[trackIndex].audioUrl;
   },
   playAudio: () => {
-    const { audio, loadAudio } = get();
+    const { audio, loadAudio, addAudioListeners } = get();
     loadAudio();
+    // addAudioListeners();
     audio.play();
   },
   togglePlay: () => {
-    const { audio } = get();
+    const { audio, removeAudioListeners, addAudioListeners } = get();
 
     if (audio.paused) {
+      addAudioListeners()
       return audio.play();
     }
-
+    removeAudioListeners()
     audio.pause();
   },
-  getAudioData: () => {
-    const { audio } = get();
-    const audioData = {
-      isPlaying: !audio.paused,
-      currentTime: audio.currentTime,
-      duration: audio.duration,
-    };
-
-    return audioData;
-  },
+  addAudioListeners: () =>{},
+  removeAudioListeners: () =>{},
+  updateAudioData: () =>
+    set(() => {
+      const { audio } = get();
+      console.log(audio.currentTime, audio.duration, audio);
+      return {
+        audioData: {
+          currentTime: audio.currentTime,
+          duration: audio.duration,
+          isPlaying: !audio.paused,
+        },
+      };
+    }),
 }));
 
 export default useAudioStore;
