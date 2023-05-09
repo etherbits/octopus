@@ -17,6 +17,7 @@ export type AlbumMetaData = {
 export type AudioData = {
   isPlaying: boolean;
   currentTime: number;
+  volume: number
   duration: number;
 };
 
@@ -61,9 +62,9 @@ const useAudioStore = create<AudioState>((set, get) => ({
   audioInterval: null,
   audio: new Audio(),
   setVolume: (volume: number) => {
-    const { audio } = get();
+    const { audio, updateAudioData } = get();
     audio.volume = volume;
-    console.log(audio, audio.volume);
+    updateAudioData()
   },
   addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
@@ -139,6 +140,7 @@ const useAudioStore = create<AudioState>((set, get) => ({
         audioData: {
           currentTime: audio.currentTime,
           duration: audio.duration,
+          volume: audio.volume,
           isPlaying: !audio.paused,
         },
       };
