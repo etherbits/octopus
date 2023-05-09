@@ -53,7 +53,16 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
             <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/skip-back.svg)] [mask-size:20px]" />
           </button>
           <button className="p-2 rounded-md" onClick={togglePlay}>
-            <div className="w-6 h-6 bg-neutral-400 [mask-image:url(/assets/icons/play.svg)] [mask-size:24px]" />
+            <div
+              className={`w-6 h-6 bg-neutral-400 [mask-size:24px]`}
+              style={{
+                maskImage: `url(${
+                  !audioData?.isPlaying
+                    ? "/assets/icons/play.svg"
+                    : "/assets/icons/pause.svg"
+                })`,
+              }}
+            />
           </button>
           <button className="p-2 rounded-md" onClick={playNext}>
             <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/skip-forward.svg)] [mask-size:20px]" />
