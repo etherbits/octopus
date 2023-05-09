@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 export type Track = {
-  id: string
+  id: string;
   name: string;
   album: string;
   artists: string[];
-  indexNumber: number
+  indexNumber: number;
   image: string;
   audio: string;
 };
@@ -48,12 +48,18 @@ const useAudioStore = create<AudioState>((set, get) => ({
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
   playNext: () => {
     const { tracks, trackIndex, setTrackIndex, play } = get();
+
     setTrackIndex(trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1);
+
     play();
   },
   playPrev: () => {
-    const { trackIndex, setTrackIndex, play } = get();
-    setTrackIndex(trackIndex <= 0 ? 0 : trackIndex - 1);
+    const { audio, trackIndex, setTrackIndex, play } = get();
+
+    if (audio.currentTime < 5) {
+      setTrackIndex(trackIndex <= 0 ? 0 : trackIndex - 1);
+    }
+
     play();
   },
   playTrack: (track) => {
@@ -62,18 +68,18 @@ const useAudioStore = create<AudioState>((set, get) => ({
     audio.play();
   },
   playAlbum: (tracks, startIndex = 0) => {
-    const { audio, play, playNext, setTracks } = get();
+    const { audio, play, playNext, setTracks, setTrackIndex } = get();
 
-    console.log(tracks);
     setTracks(tracks);
-    audio.src = tracks[startIndex].audio;
+    setTrackIndex(startIndex);
     audio.onended = playNext;
 
     play();
   },
   play: () => {
-    const { audio, addAudioListeners } = get();
+    const { audio, tracks, trackIndex, addAudioListeners } = get();
     addAudioListeners();
+    audio.src = tracks[trackIndex].audio;
     audio.play();
   },
   togglePlay: () => {
