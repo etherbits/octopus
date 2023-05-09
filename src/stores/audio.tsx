@@ -1,122 +1,83 @@
 import { create } from "zustand";
 
-export type TrackMetaData = {
-  Name: string;
-  Album: string;
-  Artists: string[];
-};
-
 export type Track = {
-  audioUrl: string;
-};
-
-export type AlbumMetaData = {
-  imageUrl: string;
+  id: string
+  name: string;
+  album: string;
+  artists: string[];
+  indexNumber: number
+  image: string;
+  audio: string;
 };
 
 export type AudioData = {
-  isPlaying: boolean;
+  isPaused: boolean;
   currentTime: number;
-  volume: number
+  volume: number;
   duration: number;
 };
 
 interface AudioState {
   tracks: Track[];
-  albumMetaData: AlbumMetaData | null;
-  trackMetaDatas: TrackMetaData[];
   trackIndex: number;
   audioData: AudioData | null;
-  audioInterval: NodeJS.Timer | null;
   audio: HTMLAudioElement;
-  setVolume: (volume: number) => void;
-  addTrack: (track: Track) => void;
+  pushTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
-  setAlbumMetaData: (albumMetaData: AlbumMetaData) => void;
-  setTrackMetaDatas: (trackMetaDatas: TrackMetaData[]) => void;
   setTrackIndex: (index: number) => void;
-  playNextTrack: () => void;
-  playPrevTrack: () => void;
+  play: () => void;
+  playNext: () => void;
+  playPrev: () => void;
   playTrack: (track: Track) => void;
-  playAlbum: (
-    albumMetaData: AlbumMetaData,
-    trackMetaDatas: TrackMetaData[],
-    tracks: Track[],
-    startIndex?: number
-  ) => void;
-  loadAudio: () => void;
-  playAudio: () => void;
+  playAlbum: (tracks: Track[], startIndex?: number) => void;
   togglePlay: () => void;
+  seekAudio: (percentage: number) => void;
+  setVolume: (volume: number) => void;
   addAudioListeners: () => void;
   removeAudioListeners: () => void;
   updateAudioData: () => void;
-  seekAudio: (percentage: number) => void;
 }
 
 const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
-  albumMetaData: null,
-  trackMetaDatas: [],
   trackIndex: 0,
   audioData: null,
-  audioInterval: null,
   audio: new Audio(),
-  setVolume: (volume: number) => {
-    const { audio, updateAudioData } = get();
-    audio.volume = volume;
-    updateAudioData()
-  },
-  addTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
+  pushTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
-  setAlbumMetaData: (albumMetaData) => set(() => ({ albumMetaData })),
-  setTrackMetaDatas: (trackMetaDatas) => set(() => ({ trackMetaDatas })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
-  playNextTrack: () => {
-    const { tracks, trackIndex, setTrackIndex, playAudio } = get();
+  playNext: () => {
+    const { tracks, trackIndex, setTrackIndex, play } = get();
     setTrackIndex(trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1);
-    playAudio();
+    play();
   },
-  playPrevTrack: () => {
-    const { trackIndex, setTrackIndex, playAudio } = get();
+  playPrev: () => {
+    const { trackIndex, setTrackIndex, play } = get();
     setTrackIndex(trackIndex <= 0 ? 0 : trackIndex - 1);
-    playAudio();
+    play();
   },
   playTrack: (track) => {
     const { audio } = get();
-    audio.src = track.audioUrl;
+    audio.src = track.audio;
     audio.play();
   },
-  playAlbum: (albumMetaData, trackMetaDatas, tracks, startIndex = 0) => {
-    const {
-      audio,
-      setTrackIndex,
-      setTracks,
-      setAlbumMetaData,
-      setTrackMetaDatas,
-      playAudio,
-      playNextTrack,
-    } = get();
-    setAlbumMetaData(albumMetaData);
-    setTrackMetaDatas(trackMetaDatas);
+  playAlbum: (tracks, startIndex = 0) => {
+    const { audio, play, playNext, setTracks } = get();
+
+    console.log(tracks);
     setTracks(tracks);
-    setTrackIndex(startIndex);
+    audio.src = tracks[startIndex].audio;
+    audio.onended = playNext;
 
-    audio.onended = playNextTrack;
-
-    playAudio();
+    play();
   },
-  loadAudio: () => {
-    const { audio, tracks, trackIndex } = get();
-    audio.src = tracks[trackIndex].audioUrl;
-  },
-  playAudio: () => {
-    const { audio, loadAudio, addAudioListeners } = get();
-    loadAudio();
+  play: () => {
+    const { audio, addAudioListeners } = get();
     addAudioListeners();
     audio.play();
   },
   togglePlay: () => {
-    const { audio, removeAudioListeners, addAudioListeners } = get();
+    const { audio } = get();
 
     if (audio.paused) {
       return audio.play();
@@ -141,15 +102,19 @@ const useAudioStore = create<AudioState>((set, get) => ({
           currentTime: audio.currentTime,
           duration: audio.duration,
           volume: audio.volume,
-          isPlaying: !audio.paused,
+          isPaused: !audio.paused,
         },
       };
     }),
-
   seekAudio: (percentage) => {
     const { audio, updateAudioData } = get();
 
     audio.currentTime = audio.duration * percentage;
+    updateAudioData();
+  },
+  setVolume: (volume: number) => {
+    const { audio, updateAudioData } = get();
+    audio.volume = volume;
     updateAudioData();
   },
 }));

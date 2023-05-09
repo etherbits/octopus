@@ -15,15 +15,15 @@ const sToMSS = (seconds: number) => {
 
 const PlayerControls: React.FC<Props> = ({ children }) => {
   const togglePlay = useAudioStore((state) => state.togglePlay);
-  const playPrev = useAudioStore((state) => state.playPrevTrack);
-  const playNext = useAudioStore((state) => state.playNextTrack);
+  const playPrev = useAudioStore((state) => state.playPrev);
+  const playNext = useAudioStore((state) => state.playNext);
   const track = useAudioStore((state) => {
-    const { trackMetaDatas, trackIndex } = state;
-    return trackMetaDatas[trackIndex];
+    const { tracks, trackIndex } = state;
+    return tracks[trackIndex];
   });
-  const album = useAudioStore((state) => state.albumMetaData);
   const audioData = useAudioStore((state) => state.audioData);
   const seekAudio = useAudioStore((state) => state.seekAudio);
+
   return (
     <div className="flex flex-col h-screen">
       <div className="h-full overflow-auto">{children}</div>
@@ -32,19 +32,19 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
           className="flex items-center gap-3"
           style={{ opacity: track ? 1 : 0 }}
         >
-          <img src={album?.imageUrl} className="w-16 h-16 rounded-md" />
+          <img src={track?.image} className="w-16 h-16 rounded-md" />
           <div className="flex flex-col gap-2 w-40 overflow-hidden">
             <div
               className="text-neutral-100 whitespace-nowrap"
-              title={track?.Artists[0]}
+              title={track?.artists[0]}
             >
-              {track?.Artists[0]}
+              {track?.artists[0]}
             </div>
             <div
               className="text-neutral-400 text-sm font-light whitespace-nowrap w-full truncate overflow-hidden"
-              title={track?.Album}
+              title={track?.album}
             >
-              {track?.Album}
+              {track?.album}
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
               className={`w-6 h-6 bg-neutral-400 [mask-size:24px]`}
               style={{
                 maskImage: `url(${
-                  !audioData?.isPlaying
+                  !audioData?.isPaused
                     ? "/assets/icons/play.svg"
                     : "/assets/icons/pause.svg"
                 })`,
@@ -70,7 +70,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
         </div>
         <div className="flex flex-col gap-3 flex-grow">
           <div className="flex">
-            {track && <span>{track.Name}</span>}
+            {track && <span>{track.name}</span>}
             {audioData && (
               <span className="ml-auto text-neutral-400 font-light text-sm">
                 {sToMSS(audioData.currentTime)} / {sToMSS(audioData.duration)}
