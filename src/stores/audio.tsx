@@ -1,9 +1,11 @@
 import { create } from "zustand";
+import { randomInt } from "../utils/general";
 
 export type Track = {
   id: string;
   name: string;
-  album: string;
+  albumId: string;
+  albumName: string;
   artists: string[];
   indexNumber: number;
   image: string;
@@ -13,16 +15,26 @@ export type Track = {
 export type AudioData = {
   isPaused: boolean;
   currentTime: number;
-  volume: number;
   duration: number;
+};
+
+export type PlayerState = {
+  shouldShuffle: boolean;
+  shouldRepeat: boolean;
+  volume: number;
 };
 
 interface AudioState {
   tracks: Track[];
+  prevTracks: Track[];
   trackIndex: number;
-  audioData: AudioData | null;
+  audioState: AudioData | null;
+  playerState: PlayerState;
+  toggleShuffle: () => void;
+  toggleRepeat: () => void;
   audio: HTMLAudioElement;
   pushTrack: (track: Track) => void;
+  pushPrevTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
   setTrackIndex: (index: number) => void;
   play: () => void;
@@ -40,16 +52,46 @@ interface AudioState {
 
 const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
+  prevTracks: [],
   trackIndex: 0,
-  audioData: null,
+  audioState: null,
+  playerState: { shouldShuffle: false, shouldRepeat: false, volume: 1 },
+  toggleShuffle: () =>
+    set((state) => ({
+      playerState: {
+        ...state.playerState,
+        shouldShuffle: !state.playerState.shouldShuffle,
+      },
+    })),
+  toggleRepeat: () =>
+    set((state) => ({
+      playerState: {
+        ...state.playerState,
+        shouldRepeat: !state.playerState.shouldRepeat,
+      },
+    })),
   audio: new Audio(),
   pushTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
+  pushPrevTrack: (track) =>
+    set((state) => ({ prevTracks: [...state.prevTracks, track] })),
   setTracks: (tracks: Track[]) => set(() => ({ tracks })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
   playNext: () => {
-    const { tracks, trackIndex, setTrackIndex, play } = get();
+    const { tracks, trackIndex, playerState, setTrackIndex, play } = get();
 
-    setTrackIndex(trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1);
+    let newIndex = 0;
+
+    if (playerState.shouldShuffle) {
+      newIndex = randomInt(tracks.length);
+    } else if (playerState.shouldRepeat) {
+      newIndex = trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1;
+    } else if (trackIndex >= tracks.length - 1) {
+      return;
+    } else {
+      newIndex = trackIndex + 1;
+    }
+
+    setTrackIndex(newIndex);
 
     play();
   },
@@ -63,22 +105,35 @@ const useAudioStore = create<AudioState>((set, get) => ({
     play();
   },
   playTrack: (track) => {
-    const { audio } = get();
-    audio.src = track.audio;
-    audio.play();
+    const { play, setTracks, setTrackIndex } = get();
+
+    setTracks([track]);
+    setTrackIndex(0);
+    play();
   },
   playAlbum: (tracks, startIndex = 0) => {
-    const { audio, play, playNext, setTracks, setTrackIndex } = get();
+    const { play, setTracks, setTrackIndex } = get();
 
     setTracks(tracks);
     setTrackIndex(startIndex);
-    audio.onended = playNext;
 
     play();
   },
   play: () => {
-    const { audio, tracks, trackIndex, addAudioListeners } = get();
+    const {
+      audio,
+      tracks,
+      trackIndex,
+      playerState,
+      playNext,
+      pushPrevTrack,
+      addAudioListeners,
+    } = get();
+
+    pushPrevTrack(tracks[trackIndex]);
     addAudioListeners();
+    audio.volume = playerState.volume;
+    audio.addEventListener("ended", playNext);
     audio.src = tracks[trackIndex].audio;
     audio.play();
   },
@@ -93,21 +148,23 @@ const useAudioStore = create<AudioState>((set, get) => ({
   },
   addAudioListeners: () => {
     const { audio, updateAudioData } = get();
+
     audio.addEventListener("timeupdate", updateAudioData);
     audio.addEventListener("play", updateAudioData);
   },
   removeAudioListeners: () => {
     const { audio, updateAudioData } = get();
+
     audio.removeEventListener("timeupdate", updateAudioData);
   },
   updateAudioData: () =>
     set(() => {
       const { audio } = get();
+
       return {
-        audioData: {
+        audioState: {
           currentTime: audio.currentTime,
           duration: audio.duration,
-          volume: audio.volume,
           isPaused: !audio.paused,
         },
       };
@@ -119,9 +176,11 @@ const useAudioStore = create<AudioState>((set, get) => ({
     updateAudioData();
   },
   setVolume: (volume: number) => {
-    const { audio, updateAudioData } = get();
+    const { audio, playerState } = get();
+
+    playerState.volume = volume;
+    set((state) => ({ playerState: { ...state.playerState, volume } }));
     audio.volume = volume;
-    updateAudioData();
   },
 }));
 

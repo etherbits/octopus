@@ -10,10 +10,11 @@ export const getAudioUrl = (
 
 export const getMorphedTracks = (items: any, albumImage: string, user: any) => {
   return items.map((track: any): Track => {
-    const { Id, Name, Album, Artists, IndexNumber } = track;
+    const { Id, Name, AlbumId, Album, Artists, IndexNumber } = track;
     return {
       id: Id,
-      album: Album,
+      albumId: AlbumId,
+      albumName: Album,
       name: Name,
       artists: Artists,
       indexNumber: IndexNumber,

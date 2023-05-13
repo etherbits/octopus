@@ -10,6 +10,7 @@ const AlbumPage = () => {
   const [user] = useAtom(userAtom);
   const [auth] = useAtom(authAtom);
   const playAlbum = useAudioStore((state) => state.playAlbum);
+  const playTrack = useAudioStore((state) => state.playTrack);
 
   const { data: albumImage } = useQuery(`image-${albumId}`, async () => {
     const res = await fetch(
@@ -43,12 +44,6 @@ const AlbumPage = () => {
     { enabled: !!albumImage }
   );
 
-  const playAudio = async (index: number) => {
-    if (!tracks) return;
-
-    playAlbum(tracks, index);
-  };
-
   return (
     <div className="flex bg-neutral-900 min-h-screen text-violet-50 p-8">
       <div>
@@ -57,10 +52,16 @@ const AlbumPage = () => {
       </div>
       {tracks && (
         <div className="flex flex-col p-12 gap-4">
-          {tracks.map((track: Track, i: number) => (
+          <button
+            onClick={() => playAlbum(tracks)}
+            className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
+          >
+            play all
+          </button>
+          {tracks.map((track: Track) => (
             <button
               key={track.id}
-              onClick={() => playAudio(i)}
+              onClick={() => playTrack(track)}
               className="flex gap-2 pr-4 items-center bg-neutral-900 rounded-md"
             >
               <img src={albumImage} className="w-10 h-10" />

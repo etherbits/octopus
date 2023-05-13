@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import useAudioStore, { AudioData } from "../../../stores/audio";
 import ProgressBar from "../../ProgressBar";
 import VolumeControl from "../../VolumeControl";
@@ -14,21 +15,36 @@ const sToMSS = (seconds: number) => {
 };
 
 const PlayerControls: React.FC<Props> = ({ children }) => {
-  const togglePlay = useAudioStore((state) => state.togglePlay);
-  const playPrev = useAudioStore((state) => state.playPrev);
-  const playNext = useAudioStore((state) => state.playNext);
-  const track = useAudioStore((state) => {
-    const { tracks, trackIndex } = state;
-    return tracks[trackIndex];
+  const {
+    togglePlay,
+    playPrev,
+    playNext,
+    track,
+    audioState,
+    playerState,
+    seekAudio,
+    toggleShuffle,
+    toggleRepeat,
+  } = useAudioStore((state) => {
+    return {
+      togglePlay: state.togglePlay,
+      playNext: state.playNext,
+      playPrev: state.playPrev,
+      track: state.tracks[state.trackIndex],
+      audioState: state.audioState,
+      playerState: state.playerState,
+      seekAudio: state.seekAudio,
+      toggleShuffle: state.toggleShuffle,
+      toggleRepeat: state.toggleRepeat,
+    };
   });
-  const audioData = useAudioStore((state) => state.audioData);
-  const seekAudio = useAudioStore((state) => state.seekAudio);
 
   return (
     <div className="flex flex-col h-screen">
       <div className="h-full overflow-auto">{children}</div>
       <div className="flex gap-10 bg-neutral-950 text-violet-50 items-center p-4">
-        <div
+        <Link
+          to={`/album/${track?.albumId}`}
           className="flex items-center gap-3"
           style={{ opacity: track ? 1 : 0 }}
         >
@@ -42,51 +58,61 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
             </div>
             <div
               className="text-neutral-400 text-sm font-light whitespace-nowrap w-full truncate overflow-hidden"
-              title={track?.album}
+              title={track?.albumName}
             >
-              {track?.album}
+              {track?.albumName}
             </div>
           </div>
-        </div>
+        </Link>
         <div className="flex align-center ">
-          <button className="p-2 rounded-md" onClick={playPrev}>
-            <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/skip-back.svg)] [mask-size:20px]" />
+          <button className="p-2 rounded-md group" onClick={playPrev}>
+            <div className="w-5 h-5 bg-neutral-400 group-hover:bg-orange-400 [mask-image:url(/assets/icons/skip-back.svg)] [mask-size:20px]" />
           </button>
-          <button className="p-2 rounded-md" onClick={togglePlay}>
+          <button className="p-2 rounded-md group" onClick={togglePlay}>
             <div
-              className={`w-6 h-6 bg-neutral-400 [mask-size:24px]`}
+              className={`w-6 h-6 bg-neutral-400 group-hover:bg-orange-400  [mask-size:24px]`}
               style={{
                 maskImage: `url(${
-                  !audioData?.isPaused
+                  !audioState?.isPaused
                     ? "/assets/icons/play.svg"
                     : "/assets/icons/pause.svg"
                 })`,
               }}
             />
           </button>
-          <button className="p-2 rounded-md" onClick={playNext}>
-            <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/skip-forward.svg)] [mask-size:20px]" />
+          <button className="p-2 rounded-md group" onClick={playNext}>
+            <div className="w-5 h-5 bg-neutral-400 group-hover:bg-orange-400  [mask-image:url(/assets/icons/skip-forward.svg)] [mask-size:20px]" />
           </button>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
           <div className="flex">
             {track && <span>{track.name}</span>}
-            {audioData && (
+            {audioState && (
               <span className="ml-auto text-neutral-400 font-light text-sm">
-                {sToMSS(audioData.currentTime)} / {sToMSS(audioData.duration)}
+                {sToMSS(audioState.currentTime)} / {sToMSS(audioState.duration)}
               </span>
             )}
           </div>
 
           <ProgressBar
-            value={audioData?.currentTime}
-            maxValue={audioData?.duration}
+            value={audioState?.currentTime}
+            maxValue={audioState?.duration}
             onChange={seekAudio}
           />
         </div>
         <div className="flex gap-3 items-center">
-          <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]" />
-          <div className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]" />
+          <button
+            onClick={toggleRepeat}
+            className={`w-5 h-5 ${
+              playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
+            } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
+          />
+          <button
+            onClick={toggleShuffle}
+            className={`w-5 h-5 ${
+              playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
+            } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
+          />
         </div>
         <div>
           <VolumeControl />

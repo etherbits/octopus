@@ -4,7 +4,7 @@ import ProgressBar from "../ProgressBar";
 
 const VolumeControl = () => {
   const setVolume = useAudioStore((state) => state.setVolume);
-  const volume = useAudioStore((state) => state.audioData?.volume);
+  const volume = useAudioStore((state) => state.playerState.volume);
   return (
     <div className="flex items-center gap-3 w-32">
       <div className="w-5 h-5 bg-neutral-100 [mask-image:url(/assets/icons/volume-2.svg)] [mask-size:20px]" />
