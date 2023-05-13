@@ -26,7 +26,7 @@ export type PlayerState = {
 
 interface AudioState {
   tracks: Track[];
-  prevTracks: Track[];
+  unplayedTracks: number[];
   trackIndex: number;
   audioState: AudioData | null;
   playerState: PlayerState;
@@ -34,8 +34,10 @@ interface AudioState {
   toggleRepeat: () => void;
   audio: HTMLAudioElement;
   pushTrack: (track: Track) => void;
-  pushPrevTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
+  setUnplayedTracks: () => void;
+  removeUnplayedTrack: (trackIndex: number) => void;
+  getCurrentTrack: () => Track;
   setTrackIndex: (index: number) => void;
   play: () => void;
   playNext: () => void;
@@ -52,7 +54,7 @@ interface AudioState {
 
 const useAudioStore = create<AudioState>((set, get) => ({
   tracks: [],
-  prevTracks: [],
+  unplayedTracks: [],
   trackIndex: 0,
   audioState: null,
   playerState: { shouldShuffle: false, shouldRepeat: false, volume: 1 },
@@ -72,25 +74,57 @@ const useAudioStore = create<AudioState>((set, get) => ({
     })),
   audio: new Audio(),
   pushTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
-  pushPrevTrack: (track) =>
-    set((state) => ({ prevTracks: [...state.prevTracks, track] })),
-  setTracks: (tracks: Track[]) => set(() => ({ tracks })),
+  setTracks: (tracks: Track[]) => {
+    set(() => ({ tracks }));
+    get().setUnplayedTracks();
+  },
+  setUnplayedTracks: () =>
+    set((state) => ({ unplayedTracks: state.tracks.map((_, i) => i) })),
+  removeUnplayedTrack: (trackIndex: number) =>
+    set((state) => ({
+      unplayedTracks: state.unplayedTracks.filter(
+        (unplayedTrack) => unplayedTrack !== trackIndex
+      ),
+    })),
   setTrackIndex: (index: number) => set(() => ({ trackIndex: index })),
+  getCurrentTrack: () => {
+    const { tracks, trackIndex } = get();
+    return tracks[trackIndex];
+  },
   playNext: () => {
-    const { tracks, trackIndex, playerState, setTrackIndex, play } = get();
+    const {
+      tracks,
+      unplayedTracks,
+      trackIndex,
+      playNext,
+      setUnplayedTracks,
+      playerState: { shouldShuffle, shouldRepeat },
+      setTrackIndex,
+      play,
+    } = get();
 
-    let newIndex = 0;
+    let newIndex = trackIndex;
+    console.log(unplayedTracks);
 
-    if (playerState.shouldShuffle) {
-      newIndex = randomInt(tracks.length);
-    } else if (playerState.shouldRepeat) {
-      newIndex = trackIndex >= tracks.length - 1 ? 0 : trackIndex + 1;
-    } else if (trackIndex >= tracks.length - 1) {
-      return;
-    } else {
-      newIndex = trackIndex + 1;
+    if (unplayedTracks.length < 1) {
+      if (!shouldRepeat) return;
+
+      setUnplayedTracks();
+      return playNext();
     }
 
+    if (shouldShuffle) {
+      let unplayedIndex = randomInt(unplayedTracks.length);
+      newIndex = unplayedTracks[unplayedIndex];
+    } else if (trackIndex >= tracks.length - 1) {
+      if (!shouldRepeat) return;
+
+      newIndex = 0;
+    } else {
+      newIndex++;
+    }
+
+    console.log(newIndex);
     setTrackIndex(newIndex);
 
     play();
@@ -122,20 +156,22 @@ const useAudioStore = create<AudioState>((set, get) => ({
   play: () => {
     const {
       audio,
-      tracks,
+      unplayedTracks,
       trackIndex,
       playerState,
+      removeUnplayedTrack,
+      getCurrentTrack,
       playNext,
-      pushPrevTrack,
       addAudioListeners,
     } = get();
 
-    pushPrevTrack(tracks[trackIndex]);
     addAudioListeners();
     audio.volume = playerState.volume;
+    removeUnplayedTrack(trackIndex);
     audio.addEventListener("ended", playNext);
-    audio.src = tracks[trackIndex].audio;
+    audio.src = getCurrentTrack().audio;
     audio.play();
+    console.log(unplayedTracks);
   },
   togglePlay: () => {
     const { audio } = get();

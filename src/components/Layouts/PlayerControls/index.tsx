@@ -9,6 +9,7 @@ interface Props {
 }
 
 const sToMSS = (seconds: number) => {
+  if (!seconds) return "0:00";
   const m = Math.floor(seconds / 60);
   const ss = Math.floor(seconds % 60);
   return `${m}:${ss < 10 ? "0" + ss : ss}`;
@@ -30,7 +31,7 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
       togglePlay: state.togglePlay,
       playNext: state.playNext,
       playPrev: state.playPrev,
-      track: state.tracks[state.trackIndex],
+      track: state.getCurrentTrack(),
       audioState: state.audioState,
       playerState: state.playerState,
       seekAudio: state.seekAudio,
