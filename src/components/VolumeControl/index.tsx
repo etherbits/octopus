@@ -9,15 +9,25 @@ const VolumeControl = () => {
     setVolume: state.setVolume,
   }));
 
+  const getImage = () => {
+    let path = "/assets/icons/";
+    if (isMuted) {
+      path += "volume-x.svg";
+    } else if (volume < 0.3) {
+      path += "volume.svg";
+    } else if (volume < 0.6) {
+      path += "volume-1.svg";
+    } else {
+      path += "volume-2.svg";
+    }
+    return path;
+  };
+
   return (
     <div className="flex items-center gap-3 w-32">
       <button
         onClick={toggleMute}
-        className={`w-5 h-5 bg-neutral-100 ${
-          isMuted
-            ? "[mask-image:url(/assets/icons/volume-x.svg)]"
-            : "[mask-image:url(/assets/icons/volume-2.svg)]"
-        } [mask-size:20px]`}
+        className={`w-5 h-5 bg-neutral-100 [mask-image:url(${getImage()})] [mask-size:20px]`}
       />
       <div className="flex-grow">
         <ProgressBar value={volume} maxValue={1} onChange={setVolume} />
