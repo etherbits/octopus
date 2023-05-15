@@ -22,6 +22,7 @@ export type PlayerState = {
   shouldShuffle: boolean;
   shouldRepeat: boolean;
   volume: number;
+  isMuted: boolean;
 };
 
 interface AudioState {
@@ -32,6 +33,7 @@ interface AudioState {
   playerState: PlayerState;
   toggleShuffle: () => void;
   toggleRepeat: () => void;
+  toggleMute: () => void;
   audio: HTMLAudioElement;
   pushTrack: (track: Track) => void;
   setTracks: (tracks: Track[]) => void;
@@ -57,7 +59,12 @@ const useAudioStore = create<AudioState>((set, get) => ({
   unplayedTracks: [],
   trackIndex: 0,
   audioState: null,
-  playerState: { shouldShuffle: false, shouldRepeat: false, volume: 1 },
+  playerState: {
+    shouldShuffle: false,
+    shouldRepeat: false,
+    volume: 1,
+    isMuted: false,
+  },
   toggleShuffle: () =>
     set((state) => ({
       playerState: {
@@ -72,6 +79,24 @@ const useAudioStore = create<AudioState>((set, get) => ({
         shouldRepeat: !state.playerState.shouldRepeat,
       },
     })),
+
+  toggleMute: () => {
+    const {
+      audio,
+      playerState: { isMuted },
+    } = get();
+
+    const isCurrentlyMuted = !isMuted;
+
+    set((state) => ({
+      playerState: {
+        ...state.playerState,
+        isMuted: isCurrentlyMuted,
+      },
+    }));
+
+    audio.muted = isCurrentlyMuted;
+  },
   audio: new Audio(),
   pushTrack: (track) => set((state) => ({ tracks: [...state.tracks, track] })),
   setTracks: (tracks: Track[]) => {
@@ -104,7 +129,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
     } = get();
 
     let newIndex = trackIndex;
-    console.log(unplayedTracks);
 
     if (unplayedTracks.length < 1) {
       if (!shouldRepeat) return;
@@ -124,7 +148,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
       newIndex++;
     }
 
-    console.log(newIndex);
     setTrackIndex(newIndex);
 
     play();
@@ -156,7 +179,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
   play: () => {
     const {
       audio,
-      unplayedTracks,
       trackIndex,
       playerState,
       removeUnplayedTrack,
@@ -171,7 +193,6 @@ const useAudioStore = create<AudioState>((set, get) => ({
     audio.addEventListener("ended", playNext);
     audio.src = getCurrentTrack().audio;
     audio.play();
-    console.log(unplayedTracks);
   },
   togglePlay: () => {
     const { audio } = get();
