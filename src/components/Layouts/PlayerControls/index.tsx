@@ -42,7 +42,25 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="h-full overflow-auto">{children}</div>
+      <div className="flex h-full overflow-auto">
+        <div className="flex flex-col gap-4 w-60 bg-neutral-950 p-4">
+          <div className="flex items-center gap-2">
+            <img
+              src="/assets/icons/octopus.svg"
+              className="w-[18px] h-[18px]"
+              alt="logo"
+            />
+            <h2 className="text-lg text-neutral-50">Octopus</h2>
+          </div>
+          <input
+            className="bg-neutral-900 rounded-md py-1 px-2 w-full"
+            placeholder="Search"
+          />
+        </div>
+        <div className="w-full rounded-bl-md drop-shadow-2xl overflow-hidden">
+          {children}
+        </div>
+      </div>
       <div className="flex gap-10 bg-neutral-950 text-violet-50 items-center p-4">
         <Link
           to={`/album/${track?.albumId}`}
