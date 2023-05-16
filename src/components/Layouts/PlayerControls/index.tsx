@@ -86,13 +86,15 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
           </button>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
-          <div className="flex">
-            {track && <span>{track.name}</span>}
-            {audioState && (
-              <span className="ml-auto text-neutral-400 font-light text-sm">
-                {sToMSS(audioState.currentTime)} / {sToMSS(audioState.duration)}
-              </span>
-            )}
+          <div className="flex h-6">
+            <span>{track ? track.name : "No audio"}</span>
+            <span className="ml-auto text-neutral-400 font-light text-sm">
+              {audioState
+                ? `${sToMSS(audioState.currentTime)} / ${sToMSS(
+                    audioState.duration
+                  )}`
+                : "0:00 / 0:00"}
+            </span>
           </div>
 
           <ProgressBar
