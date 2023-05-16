@@ -27,7 +27,8 @@ const VolumeControl = () => {
     <div className="flex items-center gap-3 w-32">
       <button
         onClick={toggleMute}
-        className={`w-5 h-5 bg-neutral-100 [mask-image:url(${getImage()})] [mask-size:20px]`}
+        className={`w-5 h-5 bg-neutral-100 [mask-size:20px]`}
+        style={{ maskImage: `url(${getImage()})` }}
       />
       <div className="flex-grow">
         <ProgressBar value={volume} maxValue={1} onChange={setVolume} />
