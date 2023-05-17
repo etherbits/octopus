@@ -5,7 +5,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const PlayerControls: React.FC<Props> = ({ children }) => {
+const DefaultLayout: React.FC<Props> = ({ children }) => {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex h-full overflow-auto">
@@ -19,4 +19,4 @@ const PlayerControls: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default PlayerControls;
+export default DefaultLayout;

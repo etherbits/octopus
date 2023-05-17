@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import PlayerControls from "../components/Layouts/PlayerControls";
+import DefaultLayout from "../components/Layouts/DefaultLayout";
 import { AuthRoute, ProtectedRoute } from "../utils/routes";
 import AlbumPage from "./Album";
 import Auth from "./Auth";
@@ -10,9 +10,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute>
-        <PlayerControls>
+        <DefaultLayout>
           <Home />
-        </PlayerControls>
+        </DefaultLayout>
       </ProtectedRoute>
     ),
   },
@@ -28,9 +28,9 @@ export const router = createBrowserRouter([
     path: "/album/:id",
     element: (
       <ProtectedRoute>
-        <PlayerControls>
+        <DefaultLayout>
           <AlbumPage />
-        </PlayerControls>
+        </DefaultLayout>
       </ProtectedRoute>
     ),
   },
