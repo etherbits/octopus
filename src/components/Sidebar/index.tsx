@@ -28,6 +28,18 @@ const Sidebar = () => {
           iconPath="/assets/icons/users.svg"
         />
       </TabGroup>
+      <TabGroup label="playlists">
+        <TabLink
+          label="Playlist #1"
+          to="/playlist-1"
+          iconPath="/assets/icons/list.svg"
+        />
+        <TabLink
+          label="Playlist #2"
+          to="/playlist-1"
+          iconPath="/assets/icons/list.svg"
+        />
+      </TabGroup>
     </div>
   );
 };
