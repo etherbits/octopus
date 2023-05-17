@@ -6,8 +6,10 @@ export type Track = {
   name: string;
   albumId: string;
   albumName: string;
+  productionYear: number;
   artists: string[];
   indexNumber: number;
+  durationS: number;
   image: string;
   audio: string;
 };

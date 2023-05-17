@@ -1,6 +1,5 @@
 import { useAtom } from "jotai";
 import { authAtom, userAtom } from "../Auth";
-import { useState } from "react";
 import { useQuery } from "react-query";
 import AlbumCard from "../../components/AlbumCard";
 
@@ -23,7 +22,7 @@ const Home: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col h-full bg-neutral-950 text-neutral-50 overflow-auto p-8">
+    <div className="flex flex-col h-full bg-neutral-900 text-neutral-50 overflow-auto p-8">
       <h1 className="text-4xl">Albums</h1>
       {data && (
         <ul>

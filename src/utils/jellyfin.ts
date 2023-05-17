@@ -10,16 +10,30 @@ export const getAudioUrl = (
 
 export const getMorphedTracks = (items: any, albumImage: string, user: any) => {
   return items.map((track: any): Track => {
-    const { Id, Name, AlbumId, Album, Artists, IndexNumber } = track;
+    console.log(track);
+    const {
+      Id,
+      Name,
+      AlbumId,
+      Album,
+      ProductionYear,
+      Artists,
+      IndexNumber,
+      RunTimeTicks,
+    } = track;
     return {
       id: Id,
+      name: Name,
       albumId: AlbumId,
       albumName: Album,
-      name: Name,
+      productionYear: ProductionYear,
       artists: Artists,
       indexNumber: IndexNumber,
+      durationS: ticksToS(RunTimeTicks),
       image: albumImage!,
       audio: getAudioUrl(Id, user.id, user.token),
     };
   });
 };
+
+export const ticksToS = (ticks: number) => ticks / (10000 * 1000);
