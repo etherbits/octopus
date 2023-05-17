@@ -1,4 +1,6 @@
+import TabLink from "../TabLink";
 import Search from "../Search";
+import TabGroup from "../TabGroup";
 
 const Sidebar = () => {
   return (
@@ -11,11 +13,21 @@ const Sidebar = () => {
         />
         <h2 className="text-lg text-neutral-50">Octopus</h2>
       </div>
-      <Search/>
-      <div>
-        <h6 className="text-neutral-600">views</h6>
-        <button>Home</button>
-      </div>
+      <Search />
+      <TabGroup label="views">
+        <TabLink label="Home" to="/" iconPath="/assets/icons/home.svg" />
+        <TabLink
+          label="Albums"
+          to="/albums"
+          iconPath="/assets/icons/disc.svg"
+        />
+        <TabLink label="Songs" to="/songs" iconPath="/assets/icons/music.svg" />
+        <TabLink
+          label="Artists"
+          to="/artists"
+          iconPath="/assets/icons/users.svg"
+        />
+      </TabGroup>
     </div>
   );
 };
