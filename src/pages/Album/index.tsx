@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import useAudioStore, { Track } from "../../stores/audio";
-import { sToMSS } from "../../utils/general";
+import { sToMMSS } from "../../utils/general";
 import { getMorphedTracks } from "../../utils/jellyfin";
 import { authAtom, userAtom } from "../Auth";
 
@@ -104,7 +104,7 @@ const AlbumPage = () => {
                     >
                       <div className="w-6">{track.indexNumber}</div>
                       <div className="w-full">{track.name}</div>
-                      <span className="w-12">0{sToMSS(track.durationS)}</span>
+                      <span className="w-12">{sToMMSS(track.durationS)}</span>
                     </button>
                   ))}
                 </div>

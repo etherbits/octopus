@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import useAudioStore from "../../stores/audio";
-import { sToMSS } from "../../utils/general";
+import { sToMMSS } from "../../utils/general";
 import ProgressBar from "../ProgressBar";
 import VolumeControl from "../VolumeControl";
 
@@ -77,10 +77,10 @@ const PlayerBar = () => {
           <span>{track ? track.name : "No audio"}</span>
           <span className="ml-auto text-neutral-400 font-light text-sm">
             {audioState
-              ? `${sToMSS(audioState.currentTime)} / ${sToMSS(
+              ? `${sToMMSS(audioState.currentTime)} / ${sToMMSS(
                   audioState.duration
                 )}`
-              : "0:00 / 0:00"}
+              : "00:00 / 00:00"}
           </span>
         </div>
 

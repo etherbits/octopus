@@ -4,9 +4,9 @@ export const randomInt = (max: number, min: number = 0) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-export const sToMSS = (seconds: number) => {
-  if (!seconds) return "0:00";
+export const sToMMSS = (seconds: number) => {
+  if (!seconds) return "00:00";
   const m = Math.floor(seconds / 60);
-  const ss = Math.floor(seconds % 60);
-  return `${m}:${ss < 10 ? "0" + ss : ss}`;
+  const s = Math.floor(seconds % 60);
+  return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
 };
