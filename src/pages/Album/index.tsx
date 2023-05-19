@@ -83,7 +83,7 @@ const AlbumPage = () => {
                 <div className="flex items-center text-neutral-600 gap-6">
                   <button
                     onClick={() => playAlbum(tracks)}
-                    className="flex px-3 py-1 gap-2 items-center text-neutral-50 bg-orange-600 rounded-[4px]"
+                    className="flex px-3 py-1 gap-2 items-center text-neutral-50 bg-orange-600 rounded-[4px] hover:bg-orange-500"
                   >
                     <div className="w-5 h-5 bg-neutral-50 [mask-image:url(/assets/icons/play-s.svg)]" />
                     Play Album
