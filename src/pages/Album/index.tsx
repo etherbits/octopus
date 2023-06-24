@@ -33,13 +33,11 @@ const AlbumPage = () => {
           headers: { Authorization: auth },
         }
       );
-
       if (!res.ok) return;
 
       const data = await res.json();
 
       const tracks: Track[] = getMorphedTracks(data.Items, albumImage!, user);
-
       return tracks;
     },
     { enabled: !!albumImage }

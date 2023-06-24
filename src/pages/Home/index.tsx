@@ -9,7 +9,7 @@ const Home: React.FC = () => {
 
   const { data } = useQuery("artists", async () => {
     const res = await fetch(
-      `http://localhost:8096/Users/${user.id}/Items?IncludeItemTypes=MusicAlbum&ParentId=7e64e319657a9516ec78490da03edccb&Fields=PrimaryImageAspectRatio,SortName,BasicSyncInfo&Recursive=true`,
+      `http://localhost:8096/Users/${user.id}/Items?IncludeItemTypes=MusicAlbum&Fields=PrimaryImageAspectRatio,SortName,BasicSyncInfo&Recursive=true`,
       {
         headers: {
           Authorization: auth,
