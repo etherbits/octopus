@@ -22,7 +22,7 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
 
   return (
     <Link to={`/album/${albumData.Id}`} className="flex gap-2 m-8 w-full">
-      <img src={image} className="w-16 h-16" />
+      <img src={image || "https://www.wagbet.com/wp-content/uploads/2019/11/music_placeholder.png"} className="w-16 h-16" />
       {albumData.Name}
     </Link>
   );
