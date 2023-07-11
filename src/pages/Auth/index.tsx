@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "./schema";
 import { z } from "zod";
 import useUserListStore from "../../stores/user";
+import { clientInfo } from "../../utils/jellyfin";
 
 const Auth: React.FC = () => {
   const addUser = useUserListStore((state) => state.addUser);
@@ -22,8 +23,7 @@ const Auth: React.FC = () => {
     const res = await fetch("http://localhost:8096/Users/AuthenticateByName", {
       method: "POST",
       headers: {
-        Authorization:
-          'MediaBrowser Client="Octopus", Device="PC", DeviceId="Octopus", Version="0.0.0"',
+        Authorization: clientInfo,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
