@@ -37,7 +37,9 @@ const AlbumCard: React.FC<Props> = ({ album }) => {
         <h6 className="text-sm whitespace-nowrap overflow-x-hidden text-ellipsis text-neutral-200">
           {album.Name}
         </h6>
-        <span className="text-xs text-neutral-400 whitespace-nowrap overflow-x-hidden text-ellipsis">{album.Artists[0]}</span>
+        <span className="text-xs text-neutral-400 whitespace-nowrap overflow-x-hidden text-ellipsis">
+          {album.Artists[0]}
+        </span>
       </div>
     </Link>
   );

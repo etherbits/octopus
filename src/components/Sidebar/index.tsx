@@ -24,7 +24,13 @@ const Sidebar = () => {
   });
   return (
     <div className="flex flex-col gap-5 p-5 pb-0 w-72 bg-neutral-950">
-      <h2 className="text-neutral-200">Octopus</h2>
+      <div className="flex justify-between">
+        <div className="flex gap-2">
+          <img src="/assets/icons/logo.svg" />
+          <h2 className="text-neutral-200">Octopus</h2>
+        </div>
+        <img src="/assets/icons/settings.svg"/>
+      </div>
       <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto ">
         {albums &&
           albums.map((album: Album) => (
