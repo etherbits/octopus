@@ -1,11 +1,6 @@
 import { useQuery } from "react-query";
 import useUserListStore from "../../stores/user";
-import AlbumCard from "../AlbumCard";
-
-type Album = {
-  Name: string;
-  Image: string;
-};
+import AlbumCard, { Album } from "../AlbumCard";
 
 const Sidebar = () => {
   const { user, auth } = useUserListStore((state) => ({
@@ -30,9 +25,9 @@ const Sidebar = () => {
   return (
     <ul className="flex flex-col gap-5 w-72 text-neutral-200 bg-neutral-950 p-4">
       {albums &&
-        albums.map((album: any) => (
+        albums.map((album: Album) => (
           <li key={album.Id}>
-            <AlbumCard albumData={album} />
+            <AlbumCard album={album} />
           </li>
         ))}
     </ul>

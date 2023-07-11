@@ -1,18 +1,20 @@
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
+export type Album = {
+  Id: string;
+  Name: string;
+  Artists: string[];
+};
+
 interface Props {
-  albumData: {
-    Id: string;
-    Name: string;
-    Artists: string[];
-  };
+  album: Album;
 }
 
-const AlbumCard: React.FC<Props> = ({ albumData }) => {
-  const { data: image } = useQuery(`image-${albumData.Id}`, async () => {
+const AlbumCard: React.FC<Props> = ({ album }) => {
+  const { data: image } = useQuery(`image-${album.Id}`, async () => {
     const res = await fetch(
-      `http://localhost:8096/items/${albumData.Id}/images/Primary`,
+      `http://localhost:8096/items/${album.Id}/images/Primary`,
     );
     if (!res.ok) return;
     const imageBlob = await res.blob();
@@ -21,7 +23,7 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
 
   return (
     <Link
-      to={`/album/${albumData.Id}`}
+      to={`/album/${album.Id}`}
       className="flex w-full bg-neutral-900 rounded-md"
     >
       <img
@@ -33,9 +35,9 @@ const AlbumCard: React.FC<Props> = ({ albumData }) => {
       />
       <div className="flex flex-col justify-between py-2 px-3 flex-grow-0 overflow-x-hidden ">
         <h6 className="text-sm whitespace-nowrap overflow-x-hidden text-ellipsis text-neutral-200">
-          {albumData.Name}
+          {album.Name}
         </h6>
-        <span className="text-xs text-neutral-400">{albumData.Artists[0]}</span>
+        <span className="text-xs text-neutral-400">{album.Artists[0]}</span>
       </div>
     </Link>
   );
