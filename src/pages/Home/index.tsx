@@ -8,6 +8,8 @@ const Home: React.FC = () => {
     auth: state.getAuthData(),
   }));
 
+  console.log(auth)
+
   if (!user) return <div>no user</div>;
 
   const { data } = useQuery("artists", async () => {

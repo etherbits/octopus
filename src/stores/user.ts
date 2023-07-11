@@ -10,6 +10,7 @@ interface User {
 interface UserListState {
   users: { [key: string]: User };
   currentUser: User | null;
+  getAuthData: () => string;
   switchUser: (user: User | null) => void;
   addUser: (user: User) => void;
   removeUser: (id: string) => void;
@@ -25,7 +26,7 @@ const useUserListStore = create<UserListState>((set, get) => ({
       return "Invalid user";
     }
 
-    return `${clientInfo}, ${currentUser.token}`;
+    return `${clientInfo}, Token=${currentUser.token}`;
   },
   switchUser: (user) => set({ currentUser: user }),
   addUser: (user) =>

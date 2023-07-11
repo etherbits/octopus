@@ -33,7 +33,7 @@ const Auth: React.FC = () => {
     console.log(authData);
     addUser({
       id: authData.User.Id,
-      username: "test",
+      username: authData.User.Name,
       token: authData.AccessToken,
     });
     navigate("/");
