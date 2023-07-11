@@ -23,14 +23,17 @@ const Sidebar = () => {
     return albumData.Items;
   });
   return (
-    <ul className="flex flex-col gap-5 w-72 text-neutral-200 bg-neutral-950 p-4 overflow-y-auto">
-      {albums &&
-        albums.map((album: Album) => (
-          <li key={album.Id}>
-            <AlbumCard album={album} />
-          </li>
-        ))}
-    </ul>
+    <div className="flex flex-col gap-5 p-4 pb-0 w-72 bg-neutral-950">
+      <h2 className="text-neutral-200">Octopus</h2>
+      <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-scroll">
+        {albums &&
+          albums.map((album: Album) => (
+            <li key={album.Id}>
+              <AlbumCard album={album} />
+            </li>
+          ))}
+      </ul>
+    </div>
   );
 };
 

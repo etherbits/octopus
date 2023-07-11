@@ -10,9 +10,7 @@ const DefaultLayout: React.FC<Props> = ({ children }) => {
     <div className="flex flex-col h-screen">
       <div className="flex h-full overflow-auto">
         <Sidebar />
-        <div className="w-full rounded-bl-md drop-shadow-2xl overflow-hidden">
-          {children}
-        </div>
+        <div className="w-full overflow-hidden">{children}</div>
       </div>
       <PlayerBar />
     </div>

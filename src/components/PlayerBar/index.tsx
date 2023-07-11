@@ -30,7 +30,7 @@ const PlayerBar = () => {
   });
 
   return (
-    <div className="flex gap-10 bg-neutral-950 text-violet-50 items-center p-4">
+    <div className="flex gap-10 bg-black text-violet-50 items-center p-4">
       <Link
         to={`/album/${track?.albumId}`}
         className="flex items-center gap-3"
@@ -60,11 +60,10 @@ const PlayerBar = () => {
           <div
             className={`w-6 h-6 bg-neutral-400 group-hover:bg-orange-400  [mask-size:24px]`}
             style={{
-              maskImage: `url(${
-                !audioState?.isPaused
+              maskImage: `url(${!audioState?.isPaused
                   ? "/assets/icons/play.svg"
                   : "/assets/icons/pause.svg"
-              })`,
+                })`,
             }}
           />
         </button>
@@ -78,8 +77,8 @@ const PlayerBar = () => {
           <span className="ml-auto text-neutral-400 font-light text-sm">
             {audioState
               ? `${sToMMSS(audioState.currentTime)} / ${sToMMSS(
-                  audioState.duration
-                )}`
+                audioState.duration
+              )}`
               : "00:00 / 00:00"}
           </span>
         </div>
@@ -93,15 +92,13 @@ const PlayerBar = () => {
       <div className="flex gap-3 items-center">
         <button
           onClick={toggleRepeat}
-          className={`w-5 h-5 ${
-            playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
-          } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
+          className={`w-5 h-5 ${playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
+            } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
         />
         <button
           onClick={toggleShuffle}
-          className={`w-5 h-5 ${
-            playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
-          } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
+          className={`w-5 h-5 ${playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
+            } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
         />
       </div>
       <div>
