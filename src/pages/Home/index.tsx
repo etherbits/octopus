@@ -4,13 +4,9 @@ import useUserListStore from "../../stores/user";
 
 const Home: React.FC = () => {
   const { user, auth } = useUserListStore((state) => ({
-    user: state.currentUser,
+    user: state.currentUser!,
     auth: state.getAuthData(),
   }));
-
-  console.log(auth)
-
-  if (!user) return <div>no user</div>;
 
   const { data } = useQuery("artists", async () => {
     const res = await fetch(
@@ -29,7 +25,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col h-full bg-neutral-900 text-neutral-50 overflow-auto p-8">
       <h1 className="text-4xl">Albums</h1>
-      {data && (
+      {/*    {data && (
         <ul>
           {data.map((item: { Id: string; Name: string }) => (
             <div key={item.Id}>
@@ -37,7 +33,7 @@ const Home: React.FC = () => {
             </div>
           ))}
         </ul>
-      )}
+      )}*/}
     </div>
   );
 };
