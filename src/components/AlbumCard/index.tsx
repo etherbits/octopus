@@ -33,11 +33,11 @@ const AlbumCard: React.FC<Props> = ({ album }) => {
         }
         className="w-14 h-14 rounded-md"
       />
-      <div className="flex flex-col justify-between py-2 px-3 flex-grow-0 overflow-x-hidden ">
+      <div className="flex flex-col justify-between py-2 px-3 flex-grow-0 overflow-x-hidden">
         <h6 className="text-sm whitespace-nowrap overflow-x-hidden text-ellipsis text-neutral-200">
           {album.Name}
         </h6>
-        <span className="text-xs text-neutral-400">{album.Artists[0]}</span>
+        <span className="text-xs text-neutral-400 whitespace-nowrap overflow-x-hidden text-ellipsis">{album.Artists[0]}</span>
       </div>
     </Link>
   );

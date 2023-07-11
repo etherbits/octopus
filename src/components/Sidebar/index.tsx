@@ -23,7 +23,7 @@ const Sidebar = () => {
     return albumData.Items;
   });
   return (
-    <ul className="flex flex-col gap-5 w-72 text-neutral-200 bg-neutral-950 p-4">
+    <ul className="flex flex-col gap-5 w-72 text-neutral-200 bg-neutral-950 p-4 overflow-y-auto">
       {albums &&
         albums.map((album: Album) => (
           <li key={album.Id}>
