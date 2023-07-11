@@ -1,11 +1,14 @@
-import { useAtom } from "jotai";
-import { authAtom, userAtom } from "../Auth";
 import { useQuery } from "react-query";
 import AlbumCard from "../../components/AlbumCard";
+import useUserListStore from "../../stores/user";
 
 const Home: React.FC = () => {
-  const [auth] = useAtom(authAtom);
-  const [user] = useAtom(userAtom);
+  const { user, auth } = useUserListStore((state) => ({
+    user: state.currentUser,
+    auth: state.getAuthData(),
+  }));
+
+  if (!user) return <div>no user</div>;
 
   const { data } = useQuery("artists", async () => {
     const res = await fetch(
@@ -14,7 +17,7 @@ const Home: React.FC = () => {
         headers: {
           Authorization: auth,
         },
-      }
+      },
     );
 
     const artists = await res.json();

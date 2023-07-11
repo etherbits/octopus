@@ -1,21 +1,24 @@
-import { useAtom } from "jotai";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import useAudioStore, { Track } from "../../stores/audio";
+import useUserListStore from "../../stores/user";
 import { sToMMSS } from "../../utils/general";
 import { getMorphedTracks } from "../../utils/jellyfin";
-import { authAtom, userAtom } from "../Auth";
 
 const AlbumPage = () => {
   const { id: albumId } = useParams();
-  const [user] = useAtom(userAtom);
-  const [auth] = useAtom(authAtom);
+  const { user, auth } = useUserListStore((state) => ({
+    user: state.currentUser,
+    auth: state.getAuthData(),
+  }));
   const playAlbum = useAudioStore((state) => state.playAlbum);
   const playTrack = useAudioStore((state) => state.playTrack);
 
+  if (!user) return <div>no user</div>;
+
   const { data: albumImage } = useQuery(`image-${albumId}`, async () => {
     const res = await fetch(
-      `http://localhost:8096/items/${albumId}/images/Primary`
+      `http://localhost:8096/items/${albumId}/images/Primary`,
     );
 
     if (!res.ok) return;
@@ -31,7 +34,7 @@ const AlbumPage = () => {
         `http://localhost:8096/Users/${user.id}/Items?ParentId=${albumId}&Fields=ItemCounts,PrimaryImageAspectRatio,BasicSyncInfo,CanDelete,MediaSourceCount&SortBy=ParentIndexNumber,IndexNumber,SortName`,
         {
           headers: { Authorization: auth },
-        }
+        },
       );
       if (!res.ok) return;
 
@@ -40,13 +43,13 @@ const AlbumPage = () => {
       const tracks: Track[] = getMorphedTracks(data.Items, albumImage!, user);
       return tracks;
     },
-    { enabled: !!albumImage }
+    { enabled: !!albumImage },
   );
 
   const getAlbumDurationM = (tracks: Track[]) => {
     const seconds = tracks.reduce(
       (accumulator, currentTrack) => accumulator + currentTrack.durationS,
-      0
+      0,
     );
 
     return Math.floor(seconds / 60);

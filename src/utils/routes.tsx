@@ -1,13 +1,12 @@
-import { useAtom } from "jotai";
 import { Navigate } from "react-router-dom";
-import { userAtom } from "../pages/Auth";
+import useUserListStore from "../stores/user";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<Props> = ({ children }) => {
-  const [user] = useAtom(userAtom);
+  const user = useUserListStore((state) => state.currentUser);
 
   if (!user?.token) {
     return <Navigate to="/auth" replace />;
@@ -17,7 +16,7 @@ export const ProtectedRoute: React.FC<Props> = ({ children }) => {
 };
 
 export const AuthRoute: React.FC<Props> = ({ children }) => {
-  const [user] = useAtom(userAtom);
+  const user = useUserListStore((state) => state.currentUser);
 
   if (user?.token) {
     return <Navigate to="/" replace />;

@@ -3,22 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema } from "./schema";
 import { z } from "zod";
-import { atom, useAtom } from "jotai";
-import { persistantAtom } from "../../utils/jotai";
-
-const clientInfoAtom = atom(
-  'MediaBrowser Client="Octopus", Device="PC", DeviceId="Octopus", Version="0.0.0"'
-);
-
-export const userAtom = persistantAtom("token", null);
-
-export const authAtom = atom(
-  (get) => `${get(clientInfoAtom)}, Token=${get(userAtom)?.token}`
-);
+import useUserListStore from "../../stores/user";
 
 const Auth: React.FC = () => {
-  const [auth] = useAtom(authAtom);
-  const [_, setUser] = useAtom(userAtom);
+  const addUser = useUserListStore((state) => state.addUser);
 
   const navigate = useNavigate();
 
@@ -33,12 +21,21 @@ const Auth: React.FC = () => {
   const onSubmit = async (data: any) => {
     const res = await fetch("http://localhost:8096/Users/AuthenticateByName", {
       method: "POST",
-      headers: { Authorization: auth, "Content-Type": "application/json" },
+      headers: {
+        Authorization:
+          'MediaBrowser Client="Octopus", Device="PC", DeviceId="Octopus", Version="0.0.0"',
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
 
     const authData = await res.json();
-    setUser({ id: authData.User.Id, token: authData.AccessToken });
+    console.log(authData);
+    addUser({
+      id: authData.User.Id,
+      username: "test",
+      token: authData.AccessToken,
+    });
     navigate("/");
   };
 
