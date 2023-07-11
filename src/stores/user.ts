@@ -9,8 +9,7 @@ interface User {
 interface UserListState {
   users: { [key: string]: User }
   currentUser: User | null
-  logIn: (user: User) => void
-  logOut: () => void
+  switchUser: (user: User | null) => void
   addUser: (user: User) => void
   removeUser: (id: string) => void
 }
@@ -18,17 +17,18 @@ interface UserListState {
 const useUserListStore = create<UserListState>((set, get) => ({
   users: {},
   currentUser: null,
-  logIn: (user) => set({ currentUser: user }),
-  logOut: () => set({ currentUser: null }),
+  switchUser: (user) => set({ currentUser: user }),
   addUser: (user) => set(({ users }) => {
-    const { logIn } = get()
-
-    logIn(user);
+    const { switchUser } = get()
+    switchUser(user);
 
     users[user.id] = user
     return { users: { ...users } }
   }),
   removeUser: (id) => set(({ users }) => {
+    const { switchUser } = get()
+    switchUser(null)
+
     delete users[id];
     return { users: { ...users } }
   }),
