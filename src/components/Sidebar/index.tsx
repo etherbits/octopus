@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   const { data: albums } = useQuery("albums", async () => {
     const res = await fetch(
-      `http://localhost:8096/Users/${user.id}/Items?IncludeItemTypes=MusicAlbum&Fields=PrimaryImageAspectRatio,SortName,BasicSyncInfo&Recursive=true`,
+      `http://localhost:8096/Users/${user.id}/Items?IncludeItemTypes=MusicAlbum&Fields=PrimaryImageAspectRatio,SortName,BasicSyncInfo&Recursive=true&SortBy=Name`,
       {
         headers: {
           Authorization: auth,
