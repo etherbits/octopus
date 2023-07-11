@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
@@ -11,18 +10,20 @@ interface Props {
 }
 
 const AlbumCard: React.FC<Props> = ({ albumData }) => {
-  const [image, setImage] = useState("");
-  const { data } = useQuery(`image-${albumData.Id}`, async () => {
+  const { data: image } = useQuery(`image-${albumData.Id}`, async () => {
     const res = await fetch(
       `http://localhost:8096/items/${albumData.Id}/images/Primary`,
     );
     if (!res.ok) return;
-    const img = await res.blob();
-    setImage(URL.createObjectURL(img));
+    const imageBlob = await res.blob();
+    return URL.createObjectURL(imageBlob);
   });
 
   return (
-    <Link to={`/album/${albumData.Id}`} className="flex w-full bg-neutral-900 rounded-md">
+    <Link
+      to={`/album/${albumData.Id}`}
+      className="flex w-full bg-neutral-900 rounded-md"
+    >
       <img
         src={
           image ||
