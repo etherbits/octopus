@@ -24,7 +24,7 @@ const AlbumCard: React.FC<Props> = ({ album }) => {
   return (
     <Link
       to={`/album/${album.Id}`}
-      className="flex w-full bg-neutral-900 rounded-md"
+      className="flex w-full bg-neutral-950 rounded-md hover:bg-neutral-900"
     >
       <img
         src={
