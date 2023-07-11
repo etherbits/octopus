@@ -32,7 +32,7 @@ const Sidebar = () => {
         </div>
         <img src="/assets/icons/settings.svg" />
       </div>
-      <TextInput />
+      <TextInput icon="Search" />
       <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
         {albums &&
           albums.map((album: Album) => (
