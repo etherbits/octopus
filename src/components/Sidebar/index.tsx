@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import useUserListStore from "../../stores/user";
 import AlbumCard, { Album } from "../AlbumCard";
+import TextInput from "../TextInput";
 
 const Sidebar = () => {
   const { user, auth } = useUserListStore((state) => ({
@@ -29,9 +30,10 @@ const Sidebar = () => {
           <img src="/assets/icons/logo.svg" />
           <h2 className="text-neutral-200">Octopus</h2>
         </div>
-        <img src="/assets/icons/settings.svg"/>
+        <img src="/assets/icons/settings.svg" />
       </div>
-      <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto ">
+      <TextInput />
+      <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
         {albums &&
           albums.map((album: Album) => (
             <li key={album.Id} className="last:mb-5">
