@@ -28,17 +28,14 @@ const Sidebar = () => {
     return albumData.Items;
   });
   return (
-    <div className="flex flex-col gap-4 w-72 text-neutral-200 bg-neutral-950 p-4">
-      {albums && (
-        <ul>
-          {albums.map((album: any) => (
-            <li key={album.Id}>
-              <AlbumCard albumData={album} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <ul className="flex flex-col gap-5 w-72 text-neutral-200 bg-neutral-950 p-4">
+      {albums &&
+        albums.map((album: any) => (
+          <li key={album.Id}>
+            <AlbumCard albumData={album} />
+          </li>
+        ))}
+    </ul>
   );
 };
 
