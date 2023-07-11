@@ -2,9 +2,10 @@ import * as Icon from "react-feather";
 
 interface Props {
   icon: keyof typeof Icon;
+  placeholder?: string;
 }
 
-const TextInput: React.FC<Props> = ({ icon }) => {
+const TextInput: React.FC<Props> = ({ icon, placeholder }) => {
   const LeftIcon = Icon[icon || "AlertCircle"];
 
   return (
@@ -12,7 +13,7 @@ const TextInput: React.FC<Props> = ({ icon }) => {
       <LeftIcon size={18} color="#a3a3a3" strokeWidth={1.5} />
       <input
         type="text"
-        placeholder="Search album..."
+        placeholder={placeholder}
         className="bg-transparent outline-none placeholder:text-neutral-400 text-sm"
       />
     </div>
