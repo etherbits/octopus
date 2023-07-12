@@ -1,3 +1,4 @@
+import { Settings } from "react-feather";
 import { useQuery } from "react-query";
 import useUserListStore from "../../stores/user";
 import AlbumCard, { Album } from "../AlbumCard";
@@ -25,12 +26,16 @@ const Sidebar = () => {
   });
   return (
     <div className="flex flex-col gap-5 p-5 pb-0 w-72 bg-neutral-950">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <img src="/assets/icons/logo.svg" />
           <h2 className="text-neutral-200">Octopus</h2>
         </div>
-        <img src="/assets/icons/settings.svg" />
+        <Settings
+          size={18}
+          strokeWidth={1.5}
+          className="stroke-neutral-700 cursor-pointer hover:stroke-neutral-400"
+        />
       </div>
       <TextInput icon="Search" placeholder="Search albums..." />
       <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
