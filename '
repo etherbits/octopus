@@ -49,15 +49,11 @@ const Sidebar = () => {
       />
       <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
         {albums &&
-          albums
-            .filter((album) =>
-              album.Name.toLowerCase().includes(albumQuery.toLowerCase()),
-            )
-            .map((album) => (
-              <li key={album.Id} className="last:mb-5">
-                <AlbumCard album={album} />
-              </li>
-            ))}
+          albums.filter(album => album.Name.includes(albumQuery)).map((album) => (
+            <li key={album.Id} className="last:mb-5">
+              <AlbumCard album={album} />
+            </li>
+          ))}
       </ul>
     </div>
   );
