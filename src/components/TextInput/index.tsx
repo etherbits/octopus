@@ -1,11 +1,12 @@
+import { HtmlHTMLAttributes } from "react";
 import * as Icon from "react-feather";
 
-interface Props {
+interface Props extends HtmlHTMLAttributes<HTMLInputElement> {
   icon: keyof typeof Icon;
-  placeholder?: string;
 }
 
-const TextInput: React.FC<Props> = ({ icon, placeholder }) => {
+const TextInput: React.FC<Props> = (props) => {
+  const { icon, ...inputProps } = props;
   const LeftIcon = Icon[icon || "AlertCircle"];
 
   return (
@@ -17,8 +18,8 @@ const TextInput: React.FC<Props> = ({ icon, placeholder }) => {
       />
       <input
         type="text"
-        placeholder={placeholder}
         className="bg-transparent outline-none placeholder:text-neutral-400 text-sm"
+        {...inputProps}
       />
     </div>
   );

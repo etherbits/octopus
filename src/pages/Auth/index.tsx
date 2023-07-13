@@ -30,7 +30,6 @@ const Auth: React.FC = () => {
     });
 
     const authData = await res.json();
-    console.log(authData);
     addUser({
       id: authData.User.Id,
       username: authData.User.Name,

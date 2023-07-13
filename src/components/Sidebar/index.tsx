@@ -21,9 +21,9 @@ const Sidebar = () => {
     );
 
     const albumData = await res.json();
-    console.log(albumData.Items[0]);
     return albumData.Items;
   });
+
   return (
     <div className="flex flex-col gap-5 p-5 pb-0 w-72 bg-neutral-950">
       <div className="flex justify-between items-center">
@@ -37,7 +37,13 @@ const Sidebar = () => {
           className="stroke-neutral-700 cursor-pointer hover:stroke-neutral-400"
         />
       </div>
-      <TextInput icon="Search" placeholder="Search albums..." />
+      <TextInput
+        icon="Search"
+        placeholder="Search albums..."
+        onChange={(e) => {
+          e.currentTarget.value;
+        }}
+      />
       <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
         {albums &&
           albums.map((album: Album) => (
