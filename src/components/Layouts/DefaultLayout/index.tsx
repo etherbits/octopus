@@ -1,3 +1,4 @@
+import Header from "../../Header";
 import PlayerBar from "../../PlayerBar";
 import Sidebar from "../../Sidebar";
 
@@ -10,7 +11,12 @@ const DefaultLayout: React.FC<Props> = ({ children }) => {
     <div className="flex flex-col h-screen ">
       <div className="flex flex-grow-[1] overflow-hidden">
         <Sidebar />
-        <div className="flex-grow-[1]">{children}</div>
+        <div className="flex flex-col flex-grow-[1]">
+          <div>
+            <Header />
+          </div>
+          {children}
+        </div>
       </div>
       <PlayerBar />
     </div>
