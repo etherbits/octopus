@@ -25,7 +25,17 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/album/:id",
+    path: "/album/:id?",
+    element: (
+      <ProtectedRoute>
+        <DefaultLayout>
+          <AlbumPage />
+        </DefaultLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/artist/:id?",
     element: (
       <ProtectedRoute>
         <DefaultLayout>
