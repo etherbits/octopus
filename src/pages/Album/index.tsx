@@ -56,7 +56,7 @@ const AlbumPage = () => {
   };
 
   return (
-    <div className="bg-neutral-900 min-h-screen text-violet-50 p-8">
+    <div className="bg-neutral-900 h-full text-violet-50 overflow-auto p-8">
       <div className="w-fit mx-auto">
         <Link to="/">
           <div className="w-6 h-6 bg-neutral-300 mb-4 [mask-image:url(/assets/icons/arrow-left.svg)] hover:bg-neutral-50" />

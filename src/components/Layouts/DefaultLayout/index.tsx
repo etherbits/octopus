@@ -7,10 +7,10 @@ interface Props {
 
 const DefaultLayout: React.FC<Props> = ({ children }) => {
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex h-full overflow-auto">
+    <div className="flex flex-col h-screen ">
+      <div className="flex flex-grow-[1] overflow-hidden">
         <Sidebar />
-        <div className="w-full overflow-hidden">{children}</div>
+        <div className="flex-grow-[1]">{children}</div>
       </div>
       <PlayerBar />
     </div>

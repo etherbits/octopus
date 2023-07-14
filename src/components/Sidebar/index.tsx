@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Settings } from "react-feather";
 import { useQuery } from "react-query";
 import useUserListStore from "../../stores/user";
@@ -28,7 +28,7 @@ const Sidebar = () => {
   });
 
   return (
-    <div className="flex flex-col gap-5 p-5 pb-0 w-72 bg-neutral-950">
+    <div className="flex flex-col gap-5 p-5 pb-0 w-72 h-full bg-neutral-950">
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <img src="/assets/icons/logo.svg" />
@@ -43,11 +43,12 @@ const Sidebar = () => {
       <TextInput
         icon="Search"
         placeholder="Search albums..."
-        onChange={(e) => {
-          setAlbumQuery(e.currentTarget.value);
+        onValueChange={(value) => {
+          setAlbumQuery(value);
         }}
+        pollDelay={350}
       />
-      <ul className="flex flex-col gap-5 w-full text-neutral-200 overflow-y-auto">
+      <ul className="flex flex-col gap-5 flex-grow text-neutral-200 overflow-y-auto">
         {albums &&
           albums
             .filter(
@@ -55,11 +56,13 @@ const Sidebar = () => {
                 album.Name.toLowerCase().includes(albumQuery.toLowerCase()) ||
                 album.Artists.includes(albumQuery.toLowerCase()),
             )
-            .map((album) => (
-              <li key={album.Id} className="last:mb-5">
-                <AlbumCard album={album} />
-              </li>
-            ))}
+            .map((album) => {
+              return (
+                <li key={album.Id} className="last:mb-5">
+                  <AlbumCard album={album} />
+                </li>
+              );
+            })}
       </ul>
     </div>
   );
