@@ -1,3 +1,4 @@
+import * as Icons from "react-feather";
 import useAudioStore from "../../stores/audio";
 import ProgressBar from "../ProgressBar";
 
@@ -9,27 +10,31 @@ const VolumeControl = () => {
     setVolume: state.setVolume,
   }));
 
-  const getImage = () => {
-    let path = "/assets/icons/";
+  const getVolumeIcon = () => {
+    let name: keyof typeof Icons = "Volume";
     if (isMuted) {
-      path += "volume-x.svg";
+      name = "VolumeX";
     } else if (volume < 0.3) {
-      path += "volume.svg";
+      name = "Volume";
     } else if (volume < 0.6) {
-      path += "volume-1.svg";
+      name = "Volume1";
     } else {
-      path += "volume-2.svg";
+      name = "Volume2";
     }
-    return path;
+    return Icons[name];
   };
+
+  const VolumeIcon = getVolumeIcon();
 
   return (
     <div className="flex items-center gap-3 w-32">
-      <button
-        onClick={toggleMute}
-        className={`w-5 h-5 bg-neutral-100 [mask-size:20px]`}
-        style={{ maskImage: `url(${getImage()})` }}
-      />
+      <button onClick={toggleMute} className="p-1.5 group">
+        <VolumeIcon
+          size={20}
+          strokeWidth={1.5}
+          className={`stroke-neutral-400 group-hover:stroke-neutral-300`}
+        />
+      </button>
       <div className="flex-grow">
         <ProgressBar value={volume} maxValue={1} onChange={setVolume} />
       </div>
