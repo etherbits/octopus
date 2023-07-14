@@ -43,16 +43,23 @@ const PlayerBar = () => {
     <div className="flex gap-10 bg-black text-violet-50 items-center p-4">
       <Link
         to={`/album/${track?.albumId}`}
-        className="flex items-center gap-3"
-        style={{ opacity: track ? 1 : 0 }}
+        className={`flex items-center gap-3 ${
+          track ? "pointer-events-auto" : "pointer-events-none"
+        }`}
       >
-        <img src={track?.image} className="w-14 h-14 rounded-md" />
+        <img
+          src={
+            track?.image ||
+            "https://www.wagbet.com/wp-content/uploads/2019/11/music_placeholder.png"
+          }
+          className="w-14 h-14 rounded-md"
+        />
         <div className="flex flex-col gap-2 w-40 overflow-hidden">
           <div
             className="text-neutral-200 whitespace-nowrap"
             title={track?.artists[0]}
           >
-            {track?.artists[0]}
+            {track?.artists[0] || "No album"}
           </div>
           <div
             className="text-neutral-400 text-sm font-light whitespace-nowrap w-full truncate overflow-hidden"
@@ -62,18 +69,18 @@ const PlayerBar = () => {
           </div>
         </div>
       </Link>
-      <div className="flex align-center ">
-        <button className="p-2 rounded-md group" onClick={playPrev}>
+      <div className="flex align-center gap-4">
+        <button className="rounded-md group" onClick={playPrev}>
           <SkipBack size={18} className="stroke-neutral-600" />
         </button>
-        <button className="p-2 rounded-md group" onClick={togglePlay}>
+        <button className="rounded-md group" onClick={togglePlay}>
           {audioState?.isPaused ? (
             <Pause size={24} className="stroke-neutral-400" />
           ) : (
             <Play size={24} className="stroke-neutral-400" />
           )}
         </button>
-        <button className="p-2 rounded-md group" onClick={playNext}>
+        <button className="rounded-md group" onClick={playNext}>
           <SkipForward size={18} className="stroke-neutral-600" />
         </button>
       </div>
@@ -106,8 +113,8 @@ const PlayerBar = () => {
           onChange={seekAudio}
         />
       </div>
-      <div className="flex items-center">
-        <button onClick={toggleRepeat} className="p-1.5 group">
+      <div className="flex gap-3 items-center">
+        <button onClick={toggleRepeat} className="group">
           <Repeat
             size={20}
             strokeWidth={1.5}
@@ -118,7 +125,7 @@ const PlayerBar = () => {
             } group-hover:stroke-orange-400`}
           />
         </button>
-        <button onClick={toggleShuffle} className="p-1.5 group">
+        <button onClick={toggleShuffle} className="group">
           <Shuffle
             size={20}
             strokeWidth={1.5}
@@ -129,7 +136,7 @@ const PlayerBar = () => {
             } group-hover:stroke-orange-400`}
           />
         </button>
-        <button className="p-1.5 group">
+        <button className="group">
           <Disc
             size={20}
             strokeWidth={1.5}
