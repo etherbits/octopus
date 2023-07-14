@@ -1,4 +1,5 @@
 import {
+  Disc,
   Heart,
   Pause,
   Play,
@@ -125,6 +126,15 @@ const PlayerBar = () => {
               playerState.shouldShuffle
                 ? "stroke-orange-500"
                 : "stroke-neutral-600"
+            } group-hover:stroke-orange-400`}
+          />
+        </button>
+        <button className="p-1.5 group">
+          <Disc
+            size={20}
+            strokeWidth={1.5}
+            className={`${
+              false ? "stroke-orange-500" : "stroke-neutral-600"
             } group-hover:stroke-orange-400`}
           />
         </button>
