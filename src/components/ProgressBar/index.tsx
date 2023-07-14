@@ -20,7 +20,7 @@ const ProgressBar: React.FC<Props> = ({
 
   return (
     <div
-      className="w-full h-2 bg-neutral-800 rounded-md overflow-hidden"
+      className="w-full h-2 bg-neutral-900 rounded-md overflow-hidden"
       onClick={handleClick}
     >
       <div

@@ -1,4 +1,12 @@
-import { Heart, Pause, Play, SkipBack, SkipForward } from "react-feather";
+import {
+  Heart,
+  Pause,
+  Play,
+  Repeat,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+} from "react-feather";
 import { Link } from "react-router-dom";
 import useAudioStore from "../../stores/audio";
 import { sToMMSS } from "../../utils/general";
@@ -82,7 +90,7 @@ const PlayerBar = () => {
               />
             </button>
           </div>
-          <span className="ml-auto text-neutral-400 font-light text-sm">
+          <span className="flex items-center ml-auto text-neutral-400 font-light text-sm">
             {audioState
               ? `${sToMMSS(audioState.currentTime)} / ${sToMMSS(
                   audioState.duration,
@@ -97,19 +105,29 @@ const PlayerBar = () => {
           onChange={seekAudio}
         />
       </div>
-      <div className="flex gap-3 items-center">
-        <button
-          onClick={toggleRepeat}
-          className={`w-5 h-5 ${
-            playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
-          } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
-        />
-        <button
-          onClick={toggleShuffle}
-          className={`w-5 h-5 ${
-            playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
-          } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
-        />
+      <div className="flex items-center">
+        <button onClick={toggleRepeat} className="p-1.5 group">
+          <Repeat
+            size={20}
+            strokeWidth={1.5}
+            className={`${
+              playerState.shouldRepeat
+                ? "stroke-orange-500"
+                : "stroke-neutral-600"
+            } group-hover:stroke-orange-400`}
+          />
+        </button>
+        <button onClick={toggleShuffle} className="p-1.5 group">
+          <Shuffle
+            size={20}
+            strokeWidth={1.5}
+            className={`${
+              playerState.shouldShuffle
+                ? "stroke-orange-500"
+                : "stroke-neutral-600"
+            } group-hover:stroke-orange-400`}
+          />
+        </button>
       </div>
       <div>
         <VolumeControl />
