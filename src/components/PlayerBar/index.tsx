@@ -1,4 +1,4 @@
-import { Pause, Play, SkipBack, SkipForward } from "react-feather";
+import { Heart, Pause, Play, SkipBack, SkipForward } from "react-feather";
 import { Link } from "react-router-dom";
 import useAudioStore from "../../stores/audio";
 import { sToMMSS } from "../../utils/general";
@@ -70,7 +70,18 @@ const PlayerBar = () => {
       </div>
       <div className="flex flex-col gap-3 flex-grow">
         <div className="flex h-6">
-          <span>{track ? track.name : "No audio"}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-neutral-200">
+              {track ? track.name : "No audio"}
+            </span>
+            <button>
+              <Heart
+                size={14}
+                strokeWidth={1.5}
+                className="stroke-neutral-600"
+              />
+            </button>
+          </div>
           <span className="ml-auto text-neutral-400 font-light text-sm">
             {audioState
               ? `${sToMMSS(audioState.currentTime)} / ${sToMMSS(
