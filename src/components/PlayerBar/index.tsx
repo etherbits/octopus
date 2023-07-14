@@ -1,3 +1,4 @@
+import { Pause, Play, SkipBack, SkipForward } from "react-feather";
 import { Link } from "react-router-dom";
 import useAudioStore from "../../stores/audio";
 import { sToMMSS } from "../../utils/general";
@@ -36,10 +37,10 @@ const PlayerBar = () => {
         className="flex items-center gap-3"
         style={{ opacity: track ? 1 : 0 }}
       >
-        <img src={track?.image} className="w-16 h-16 rounded-md" />
+        <img src={track?.image} className="w-14 h-14 rounded-md" />
         <div className="flex flex-col gap-2 w-40 overflow-hidden">
           <div
-            className="text-neutral-100 whitespace-nowrap"
+            className="text-neutral-200 whitespace-nowrap"
             title={track?.artists[0]}
           >
             {track?.artists[0]}
@@ -54,21 +55,17 @@ const PlayerBar = () => {
       </Link>
       <div className="flex align-center ">
         <button className="p-2 rounded-md group" onClick={playPrev}>
-          <div className="w-5 h-5 bg-neutral-400 group-hover:bg-orange-400 [mask-image:url(/assets/icons/skip-back.svg)] [mask-size:20px]" />
+          <SkipBack size={18} className="stroke-neutral-600" />
         </button>
         <button className="p-2 rounded-md group" onClick={togglePlay}>
-          <div
-            className={`w-6 h-6 bg-neutral-400 group-hover:bg-orange-400  [mask-size:24px]`}
-            style={{
-              maskImage: `url(${!audioState?.isPaused
-                  ? "/assets/icons/play.svg"
-                  : "/assets/icons/pause.svg"
-                })`,
-            }}
-          />
+          {audioState?.isPaused ? (
+            <Pause size={24} className="stroke-neutral-400" />
+          ) : (
+            <Play size={24} className="stroke-neutral-400" />
+          )}
         </button>
         <button className="p-2 rounded-md group" onClick={playNext}>
-          <div className="w-5 h-5 bg-neutral-400 group-hover:bg-orange-400  [mask-image:url(/assets/icons/skip-forward.svg)] [mask-size:20px]" />
+          <SkipForward size={18} className="stroke-neutral-600" />
         </button>
       </div>
       <div className="flex flex-col gap-3 flex-grow">
@@ -77,8 +74,8 @@ const PlayerBar = () => {
           <span className="ml-auto text-neutral-400 font-light text-sm">
             {audioState
               ? `${sToMMSS(audioState.currentTime)} / ${sToMMSS(
-                audioState.duration
-              )}`
+                  audioState.duration,
+                )}`
               : "00:00 / 00:00"}
           </span>
         </div>
@@ -92,13 +89,15 @@ const PlayerBar = () => {
       <div className="flex gap-3 items-center">
         <button
           onClick={toggleRepeat}
-          className={`w-5 h-5 ${playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
-            } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
+          className={`w-5 h-5 ${
+            playerState.shouldRepeat ? "bg-orange-500" : "bg-neutral-400"
+          } hover:bg-orange-400 [mask-image:url(/assets/icons/repeat.svg)] [mask-size:20px]`}
         />
         <button
           onClick={toggleShuffle}
-          className={`w-5 h-5 ${playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
-            } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
+          className={`w-5 h-5 ${
+            playerState.shouldShuffle ? "bg-orange-500" : "bg-neutral-400"
+          } hover:bg-orange-400 [mask-image:url(/assets/icons/shuffle.svg)] [mask-size:20px]`}
         />
       </div>
       <div>
