@@ -14,7 +14,6 @@ const Sidebar = () => {
   const [albumQuery, setAlbumQuery] = useState("");
 
   const { data: albums } = useQuery("albums", async () => {
-    console.log(user.id);
     const res = await fetch(
       `http://localhost:8096/Users/${user.id}/Items?IncludeItemTypes=MusicAlbum&Fields=PrimaryImageAspectRatio,SortName,BasicSyncInfo&Recursive=true&SortBy=Name`,
       {
