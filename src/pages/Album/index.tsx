@@ -12,8 +12,11 @@ const AlbumPage = () => {
     user: state.currentUser,
     auth: state.getAuthData(),
   }));
-  const playAlbum = useAudioStore((state) => state.playAlbum);
-  const playTrack = useAudioStore((state) => state.playTrack);
+  const { playAlbum, playTrack, currentTrack } = useAudioStore((state) => ({
+    playAlbum: state.playAlbum,
+    playTrack: state.playTrack,
+    currentTrack: state.getCurrentTrack(),
+  }));
 
   if (!user) return <div>no user</div>;
 
@@ -114,7 +117,11 @@ const AlbumPage = () => {
                   <li>
                     <button
                       onClick={() => playTrack(track)}
-                      className="flex gap-8 text-sm text-left px-3 py-2 rounded-md bg-gradient-to-r from-neutral-800 to-neutral-900 hover:to-neutral-800"
+                      className={`flex gap-8 text-sm text-left px-3 py-2 rounded-md ${
+                        currentTrack?.id === track.id
+                          ? "bg-neutral-950 hover:bg-neutral-800"
+                          : "bg-gradient-to-r from-neutral-800 to-neutral-900 hover:to-neutral-800"
+                      } `}
                     >
                       <div className="w-7 overflow-hidden text-ellipsis">
                         {track.indexNumber}
