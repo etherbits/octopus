@@ -1,3 +1,4 @@
+import { MoreVertical } from "react-feather";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import useAudioStore, { Track } from "../../stores/audio";
@@ -56,46 +57,49 @@ const AlbumPage = () => {
   };
 
   return (
-    <div className="bg-neutral-900 h-full text-violet-50 overflow-auto p-8">
+    <div className="bg-neutral-900 h-full text-violet-50 overflow-auto p-11">
       <div className="w-fit mx-auto">
-        <Link to="/">
-          <div className="w-6 h-6 bg-neutral-300 mb-4 [mask-image:url(/assets/icons/arrow-left.svg)] hover:bg-neutral-50" />
-        </Link>
         <div className="flex gap-16">
-          <div>
-            <img src={albumImage} className="w-96 h-96 rounded-lg" />
-          </div>
-          {tracks && (
-            <div className="flex flex-col gap-8 w-[500px]">
-              <div>
-                <div className="flex items-center gap-4">
-                  <h1 className="text-neutral-50 font-bold text-2xl">
+          <div className="flex flex-col gap-6">
+            <img src={albumImage} className="w-80 h-80 rounded-lg" />
+            {tracks && (
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1 mb-2">
+                  <h1 className="text-neutral-50 font-bold text-xl">
                     {tracks[0].albumName}
                   </h1>
-                  <span className="text-neutral-300 text-xl">
+                  <MoreVertical
+                    size={20}
+                    strokeWidth={1.5}
+                    className="stroke-neutral-500"
+                  />
+                </div>
+                <div className="flex gap-5 mb-4">
+                  <span className="text-neutral-300 font-medium">
+                    {tracks[0].artists[0]}
+                  </span>
+                  <span className="text-neutral-300">
                     {tracks[0].productionYear}
                   </span>
                 </div>
-                <span className="text-neutral-300 text-xl">
-                  {tracks[0].artists[0]}
-                </span>
-              </div>
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center text-neutral-600 gap-6">
+                <div className="flex justify-between items-center">
                   <button
                     onClick={() => playAlbum(tracks)}
-                    className="flex px-3 py-1 gap-2 items-center text-neutral-50 bg-orange-600 rounded-[4px] hover:bg-orange-500"
+                    className="px-4 py-1.5 outline outline-2 outline-orange-500 rounded-md text-orange-300"
                   >
-                    <div className="w-5 h-5 bg-neutral-50 [mask-image:url(/assets/icons/play-s.svg)]" />
                     Play Album
                   </button>
-                  <span>{tracks.length} tracks</span>
-                  <span>{getAlbumDurationM(tracks)} minutes</span>
-                  <div className="flex gap-2 ml-auto">
-                    <button className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/plus.svg)] hover:bg-neutral-200" />
-                    <button className="w-5 h-5 bg-neutral-400 [mask-image:url(/assets/icons/heart.svg)] hover:bg-neutral-200" />
+                  <div className="flex text-sm text-neutral-500 gap-3">
+                    <span>{tracks.length} tracks</span>
+                    <span>{getAlbumDurationM(tracks)} minutes</span>
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
+          {tracks && (
+            <div className="flex flex-col gap-8 w-[500px]">
+              <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2 w-full">
                   {tracks.map((track: Track) => (
                     <button

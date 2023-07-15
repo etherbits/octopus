@@ -1,6 +1,6 @@
 import {
-  Disc,
   Heart,
+  Music,
   Pause,
   Play,
   Repeat,
@@ -137,7 +137,7 @@ const PlayerBar = () => {
           />
         </button>
         <button className="group">
-          <Disc
+          <Music
             size={20}
             strokeWidth={1.5}
             className={`${
