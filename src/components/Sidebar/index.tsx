@@ -54,7 +54,10 @@ const Sidebar = () => {
             .filter(
               (album) =>
                 album.Name.toLowerCase().includes(albumQuery.toLowerCase()) ||
-                album.Artists.includes(albumQuery.toLowerCase()),
+                (album.Artists[0] &&
+                  album.Artists[0]
+                    .toLowerCase()
+                    .includes(albumQuery.toLowerCase())),
             )
             .map((album) => {
               return (
