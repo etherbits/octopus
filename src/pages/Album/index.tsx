@@ -57,15 +57,18 @@ const AlbumPage = () => {
   };
 
   return (
-    <div className="bg-neutral-900 h-full text-violet-50 overflow-auto p-11">
-      <div className="w-fit mx-auto">
-        <div className="flex gap-16">
+    <div className="bg-neutral-900 h-full text-violet-50 p-11 overflow-hidden">
+      <div className="w-fit h-full  mx-auto">
+        <div className="flex h-full gap-16">
           <div className="flex flex-col gap-6">
             <img src={albumImage} className="w-80 h-80 rounded-lg" />
             {tracks && (
-              <div className="flex flex-col">
+              <div className="flex flex-col w-80">
                 <div className="flex items-center gap-1 mb-2">
-                  <h1 className="text-neutral-50 font-bold text-xl">
+                  <h1
+                    className="text-neutral-50 font-bold text-xl whitespace-nowrap overflow-hidden text-ellipsis"
+                    title={tracks[0].albumName}
+                  >
                     {tracks[0].albumName}
                   </h1>
                   <MoreVertical
@@ -97,25 +100,52 @@ const AlbumPage = () => {
               </div>
             )}
           </div>
-          {tracks && (
-            <div className="flex flex-col gap-8 w-[500px]">
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2 w-full">
-                  {tracks.map((track: Track) => (
-                    <button
-                      key={track.id}
-                      onClick={() => playTrack(track)}
-                      className="flex gap-2 text-left px-4 py-2 rounded-md hover:bg-neutral-800"
-                    >
-                      <div className="w-6">{track.indexNumber}</div>
-                      <div className="w-full">{track.name}</div>
-                      <span className="w-12">{sToMMSS(track.durationS)}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex mx-3 gap-8 text-sm text-neutral-400">
+              <div className="w-7">#</div>
+              <div className="w-48">Title</div>
+              <div className="w-32">Artists</div>
+              <div className="w-48">Album</div>
+              <span className="flex justify-end w-16">Duration</span>
             </div>
-          )}
+            {tracks && (
+              <ul className="flex flex-col gap-5 flex-grow-1 h-full overflow-auto">
+                {tracks.map((track: Track) => (
+                  <li>
+                    <button
+                      onClick={() => playTrack(track)}
+                      className="flex gap-8 text-sm text-left px-3 py-2 rounded-md bg-gradient-to-r from-neutral-800 to-neutral-900 hover:to-neutral-800"
+                    >
+                      <div className="w-7 overflow-hidden text-ellipsis">
+                        {track.indexNumber}
+                      </div>
+                      <div
+                        className="w-48 whitespace-nowrap overflow-hidden text-ellipsis"
+                        title={track.name}
+                      >
+                        {track.name}
+                      </div>
+                      <div
+                        className="w-32 whitespace-nowrap overflow-hidden text-ellipsis"
+                        title={track.artists[0]}
+                      >
+                        {track.artists[0]}
+                      </div>
+                      <div
+                        className="w-48 whitespace-nowrap overflow-hidden text-ellipsis"
+                        title={track.albumName}
+                      >
+                        {track.albumName}
+                      </div>
+                      <span className="flex justify-end w-16 overflow-hidden text-ellipsis">
+                        {sToMMSS(track.durationS)}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </div>

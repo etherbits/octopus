@@ -12,9 +12,7 @@ const DefaultLayout: React.FC<Props> = ({ children }) => {
       <div className="flex flex-grow-[1] overflow-hidden">
         <Sidebar />
         <div className="flex flex-col flex-grow-[1] bg-neutral-900">
-          <div>
-            <Header />
-          </div>
+          <Header/>
           {children}
         </div>
       </div>
