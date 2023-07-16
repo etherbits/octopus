@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Heart,
   Music,
@@ -39,6 +40,8 @@ const PlayerBar = () => {
       toggleRepeat: state.toggleRepeat,
     };
   });
+
+  const [isQueueOpen, setIsQueueOpen] = useState(false);
 
   return (
     <div className="relative flex gap-10 bg-black text-violet-50 items-center p-4">
@@ -138,7 +141,12 @@ const PlayerBar = () => {
           />
         </button>
         <div className="flex">
-          <button className="group">
+          <button
+            className="group"
+            onClick={() => {
+              setIsQueueOpen((state) => !state);
+            }}
+          >
             <Music
               size={20}
               strokeWidth={1.5}
@@ -147,9 +155,11 @@ const PlayerBar = () => {
               } group-hover:stroke-orange-400`}
             />
           </button>
-          <div className="absolute right-0 bottom-full m-4">
-            <QueueList />
-          </div>
+          {isQueueOpen && (
+            <div className="absolute right-0 bottom-full m-4">
+              <QueueList />
+            </div>
+          )}
         </div>
       </div>
       <div>
