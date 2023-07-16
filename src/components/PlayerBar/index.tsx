@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Heart,
   Music,
@@ -44,7 +45,7 @@ const PlayerBar = () => {
   const [isQueueOpen, setIsQueueOpen] = useState(false);
 
   return (
-    <div className="relative flex gap-10 bg-black text-violet-50 items-center p-4">
+    <div className="flex gap-10 bg-black text-violet-50 items-center p-4">
       <Link
         to={`/album/${track?.albumId}`}
         className={`flex items-center gap-3 ${
@@ -140,27 +141,35 @@ const PlayerBar = () => {
             } group-hover:stroke-orange-400`}
           />
         </button>
-        <div className="flex">
-          <button
-            className="group"
-            onClick={() => {
-              setIsQueueOpen((state) => !state);
-            }}
-          >
-            <Music
-              size={20}
-              strokeWidth={1.5}
-              className={`${
-                false ? "stroke-orange-500" : "stroke-neutral-600"
-              } group-hover:stroke-orange-400`}
-            />
-          </button>
-          {isQueueOpen && (
-            <div className="absolute right-0 bottom-full m-4">
-              <QueueList />
-            </div>
+        <button
+          className="group"
+          onClick={() => {
+            setIsQueueOpen((state) => !state);
+          }}
+        >
+          <Music
+            size={20}
+            strokeWidth={1.5}
+            className={`${
+              isQueueOpen ? "stroke-orange-500" : "stroke-neutral-600"
+            } group-hover:stroke-orange-400`}
+          />
+        </button>
+        {isQueueOpen &&
+          createPortal(
+            <div
+              onClick={() => setIsQueueOpen((state) => !state)}
+              className="flex justify-end items-end absolute h-full w-full cursor-pointer p-8 backdrop-blur-lg bg-[#0004]"
+            >
+              <div
+                id="portal"
+                className="flex flex-col justify-end pointer-events-auto cursor-auto h-full relative"
+              >
+                <QueueList />{" "}
+              </div>
+            </div>,
+            document.getElementById("layout-content") as HTMLElement,
           )}
-        </div>
       </div>
       <div>
         <VolumeControl />
