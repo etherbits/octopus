@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import useAudioStore from "../../stores/audio";
 import { sToMMSS } from "../../utils/general";
 import ProgressBar from "../ProgressBar";
+import QueueList from "../QueueList";
 import VolumeControl from "../VolumeControl";
 
 const PlayerBar = () => {
@@ -40,7 +41,7 @@ const PlayerBar = () => {
   });
 
   return (
-    <div className="flex gap-10 bg-black text-violet-50 items-center p-4">
+    <div className="relative flex gap-10 bg-black text-violet-50 items-center p-4">
       <Link
         to={`/album/${track?.albumId}`}
         className={`flex items-center gap-3 ${
@@ -136,15 +137,20 @@ const PlayerBar = () => {
             } group-hover:stroke-orange-400`}
           />
         </button>
-        <button className="group">
-          <Music
-            size={20}
-            strokeWidth={1.5}
-            className={`${
-              false ? "stroke-orange-500" : "stroke-neutral-600"
-            } group-hover:stroke-orange-400`}
-          />
-        </button>
+        <div className="flex">
+          <button className="group">
+            <Music
+              size={20}
+              strokeWidth={1.5}
+              className={`${
+                false ? "stroke-orange-500" : "stroke-neutral-600"
+              } group-hover:stroke-orange-400`}
+            />
+          </button>
+          <div className="absolute right-0 bottom-full m-4">
+            <QueueList />
+          </div>
+        </div>
       </div>
       <div>
         <VolumeControl />
